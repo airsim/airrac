@@ -46,21 +46,19 @@ namespace AIRRAC {
       const stdair::AirlineCode_T lAirlineCode (iStr, iStrEnd);
       _yield._airlineCode = lAirlineCode;
                 
-      // As that's the beginning of a new flight, the list of legs
+      // As that's the beginning of a new yield rule, the list of legs
       // must be reset
-      _yield._legList.clear();
+      //_yield._legList.clear();
     }
       
     // //////////////////////////////////////////////////////////////////
-    doEndYield::doEndYield (stdair::BomRoot& ioBomRoot,
-                                      YieldStruct_T& ioYield)
+    doEndYield::doEndYield (stdair::BomRoot& ioBomRoot, YieldStruct_T& ioYield)
       : ParserSemanticAction (ioYield), _bomRoot (ioBomRoot) {
     }
     
     // //////////////////////////////////////////////////////////////////
     // void doEndYield::operator() (char iChar) const {
-    void doEndYield::operator() (iterator_t iStr,
-                                      iterator_t iStrEnd) const {
+    void doEndYield::operator() (iterator_t iStr, iterator_t iStrEnd) const {
         
       // DEBUG: Display the result
       // STDAIR_LOG_DEBUG ("Yield: " << _yield.describe());
@@ -197,8 +195,11 @@ namespace AIRRAC {
       // BOOST_SPIRIT_DEBUG_NODE (YieldParser);
       BOOST_SPIRIT_DEBUG_NODE (yield_list);
       BOOST_SPIRIT_DEBUG_NODE (yield);
-      BOOST_SPIRIT_DEBUG_NODE (yield_end);
-    }
+      BOOST_SPIRIT_DEBUG_NODE (yield_end); 
+      BOOST_SPIRIT_DEBUG_NODE (airline_code);
+      BOOST_SPIRIT_DEBUG_NODE (date);
+      BOOST_SPIRIT_DEBUG_NODE (time);
+   }
 
     // //////////////////////////////////////////////////////////////////
     template<typename ScannerT>

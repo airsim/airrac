@@ -10,6 +10,7 @@
 #include <boost/shared_ptr.hpp>
 // StdAir
 #include <stdair/STDAIR_Types.hpp>
+#include <stdair/bom/YieldStore.hpp>
 // Airrac
 #include <airrac/AIRRAC_Types.hpp>
 #include <airrac/service/ServiceAbstract.hpp>
@@ -27,7 +28,7 @@ namespace AIRRAC {
   private:
     /// //////////////// Constructors and destructors /////////////
     /** Main constructor. */
-    AIRRAC_ServiceContext (const stdair::AirlineCode_T& iAirlineCode);
+    AIRRAC_ServiceContext (const stdair::AirlineCode_T&, stdair::YieldStore&);
     /** Default constructor. (not to be used). */
     AIRRAC_ServiceContext ();
     /** Default copy constructor (not to be used). */
@@ -47,6 +48,11 @@ namespace AIRRAC {
     /** Get the airline code. */
     const stdair::AirlineCode_T& getAirlineCode () const {
       return _airlineCode;
+    }
+
+    /** Get the airline yield store. */
+    stdair::YieldStore& getYieldStore () {
+      return _yieldStore;
     }
 
     
@@ -81,6 +87,9 @@ namespace AIRRAC {
     // //////////// Attributes //////////////////
     /** Airline code. */
     stdair::AirlineCode_T _airlineCode;
+
+    /** Airline yield store object. */
+    stdair::YieldStore& _yieldStore;
   };
 
 }

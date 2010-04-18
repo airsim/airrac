@@ -12,8 +12,9 @@ namespace AIRRAC {
 
   // //////////////////////////////////////////////////////////////////////
   AIRRAC_ServiceContext::
-  AIRRAC_ServiceContext (const stdair::AirlineCode_T& iAirlineCode)
-    : _airlineCode (iAirlineCode) {
+  AIRRAC_ServiceContext (const stdair::AirlineCode_T& iAirlineCode,
+                         stdair::YieldStore& ioYieldStore)
+    : _airlineCode (iAirlineCode), _yieldStore (ioYieldStore) {
   }
 
   // //////////////////////////////////////////////////////////////////////

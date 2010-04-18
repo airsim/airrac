@@ -32,11 +32,11 @@ namespace AIRRAC {
   // //////////////////////////////////////////////////////////////////////
   AIRRAC_ServiceContext& FacAirracServiceContext::
   create (const std::string& iTravelDatabaseName,
-          stdair::Yield& ioYieldStore) {
+          stdair::YieldStore& ioYieldStore) {
     AIRRAC_ServiceContext* aAIRRAC_ServiceContext_ptr = NULL;
 
     aAIRRAC_ServiceContext_ptr =
-      new AIRRAC_ServiceContext (iTravelDatabaseName, ioIventory);
+      new AIRRAC_ServiceContext (iTravelDatabaseName, ioYieldStore);
     assert (aAIRRAC_ServiceContext_ptr != NULL);
 
     // The new object is added to the Bom pool

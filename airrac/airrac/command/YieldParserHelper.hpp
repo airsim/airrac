@@ -88,7 +88,8 @@ namespace AIRRAC {
         definition (YieldParser const& self);
         
         // Instantiation of rules
-        boost::spirit::classic::rule<ScannerT> yield_list, yield, yield_end;
+        boost::spirit::classic::rule<ScannerT> yield_list, yield, yield_end,
+          date, time, airline_code;
 
         /** Entry point of the parser. */
         boost::spirit::classic::rule<ScannerT> const& start() const;
@@ -116,10 +117,10 @@ namespace AIRRAC {
   public:
     /** Constructor. */
     YieldFileParser (stdair::BomRoot&,
-                         const stdair::Filename_T& iYieldInputFilename);
+                     const stdair::Filename_T& iYieldInputFilename);
 
-    /** Parse the yield input file. */
-    bool generateYield ();
+    /** Parse the yield store input file. */
+    bool generateYieldStore ();
       
   private:
     /** Initialise. */

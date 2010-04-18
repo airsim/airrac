@@ -1,5 +1,5 @@
-#ifndef __AIRINV_SVC_SERVICEABSTRACT_HPP
-#define __AIRINV_SVC_SERVICEABSTRACT_HPP
+#ifndef __AIRRAC_SVC_SERVICEABSTRACT_HPP
+#define __AIRRAC_SVC_SERVICEABSTRACT_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -8,7 +8,7 @@
 #include <iosfwd>
 //#include <sstream>
 
-namespace AIRINV {
+namespace AIRRAC {
 
   /** Base class for the Service layer. */
   class ServiceAbstract {
@@ -40,7 +40,7 @@ template <class charT, class traits>
 inline
 std::basic_ostream<charT, traits>&
 operator<< (std::basic_ostream<charT, traits>& ioOut,
-            const AIRINV::ServiceAbstract& iService) {
+            const AIRRAC::ServiceAbstract& iService) {
   /**
      string stream:
      - with same format
@@ -68,10 +68,10 @@ template <class charT, class traits>
 inline
 std::basic_istream<charT, traits>&
 operator>> (std::basic_istream<charT, traits>& ioIn,
-            AIRINV::ServiceAbstract& ioService) {
+            AIRRAC::ServiceAbstract& ioService) {
   // Fill Service object with input stream
   ioService.fromStream (ioIn);
   return ioIn;
 }
 
-#endif // __AIRINV_SVC_SERVICEABSTRACT_HPP
+#endif // __AIRRAC_SVC_SERVICEABSTRACT_HPP
