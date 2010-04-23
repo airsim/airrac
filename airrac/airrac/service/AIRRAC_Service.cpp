@@ -13,6 +13,7 @@
 #include <stdair/bom/BomManager.hpp> // for display()
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/factory/FacBomContent.hpp>
+#include <stdair/command/CmdBomManager.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
 // Airrac
@@ -46,11 +47,13 @@ namespace AIRRAC {
     // which all of the other BOM objects of the airline yield will be
     // attached
     assert (ioSTDAIR_Service_ptr != NULL);
-    stdair::YieldStore& lYieldStore =
-      ioSTDAIR_Service_ptr->getYieldStore (iAirlineCode);
-
+    const stdair::BomRoot& lBomRoot = ioSTDAIR_Service_ptr->getBomRoot();
+    stdair::YieldStore* lYieldStore_ptr =
+      lBomRoot.getYieldStore (iAirlineCode);
+    assert (lYieldStore_ptr != NULL);
+            
     // Initialise the service context
-    initServiceContext (iAirlineCode, lYieldStore);
+    initServiceContext (iAirlineCode, *lYieldStore_ptr);
 
     // Retrieve the Airrac service context
     assert (_airracServiceContext != NULL);
@@ -79,8 +82,9 @@ namespace AIRRAC {
     // which all of the other BOM objects of the airline yield store will be
     // attached
     assert (lSTDAIR_Service_ptr != NULL);
+    const stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
     stdair::YieldStore& lYieldStore =
-      lSTDAIR_Service_ptr->createYieldStore (iAirlineCode);
+      stdair::CmdBomManager::createYieldStore (lBomRoot, iAirlineCode);
 
     // Initialise the service context
     initServiceContext (iAirlineCode, lYieldStore);
@@ -107,8 +111,9 @@ namespace AIRRAC {
     // which all of the other BOM objects of the airline yield store will be
     // attached
     assert (lSTDAIR_Service_ptr != NULL);
+    const stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
     stdair::YieldStore& lYieldStore =
-      lSTDAIR_Service_ptr->createYieldStore (iAirlineCode);
+      stdair::CmdBomManager::createYieldStore (lBomRoot, iAirlineCode);
 
     // Initialise the service context
     initServiceContext (iAirlineCode, lYieldStore);
