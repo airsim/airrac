@@ -18,6 +18,7 @@ YieldTestSuite_CXXFLAGS= $(CPPUNIT_CFLAGS) $(BOOST_CFLAGS)
 YieldTestSuite_LDADD =
 YieldTestSuite_LDFLAGS = \
 		$(BOOST_LIBS) $(CPPUNIT_LIBS) \
-		$(top_builddir)/extracppunit/libextracc-extracppunit.la \
+		$(top_builddir)/extracppunit/libextracppunit.la \
 		$(top_builddir)/stdair/core/libstdair.la \
 		$(top_builddir)/airrac/core/libairrac.la
+
