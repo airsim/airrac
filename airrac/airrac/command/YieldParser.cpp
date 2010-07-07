@@ -6,8 +6,6 @@
 #include <string>
 // StdAir
 #include <stdair/basic/DictionaryManager.hpp>
-//#include <stdair/bom/YieldStore.hpp>
-#include <stdair/bom/Network.hpp>
 // Airrac
 #include <airrac/command/YieldParserHelper.hpp>
 #include <airrac/command/YieldParser.hpp>
