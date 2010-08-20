@@ -10,10 +10,10 @@
 // StdAir
 #include <stdair/basic/BasChronometer.hpp>
 #include <stdair/basic/BasFileMgr.hpp>
-#include <stdair/bom/BomManager.hpp> // for display()
+#include <stdair/bom/BomManager.hpp> 
 #include <stdair/bom/BomRoot.hpp>
-#include <stdair/factory/FacBomContent.hpp>
-#include <stdair/command/CmdBomManager.hpp>
+#include <stdair/bom/YieldStore.hpp>
+#include <stdair/factory/FacBomManager.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
 // Airrac
@@ -47,9 +47,9 @@ namespace AIRRAC {
     // which all of the other BOM objects of the airline yield will be
     // attached
     assert (ioSTDAIR_Service_ptr != NULL);
-    const stdair::BomRoot& lBomRoot = ioSTDAIR_Service_ptr->getBomRoot();
+    stdair::BomRoot& lBomRoot = ioSTDAIR_Service_ptr->getBomRoot();
     stdair::YieldStore* lYieldStore_ptr =
-      lBomRoot.getYieldStore (iAirlineCode);
+      stdair::BomManager::getChildPtr<stdair::YieldStore>(lBomRoot,iAirlineCode);
     assert (lYieldStore_ptr != NULL);
             
     // Initialise the service context
@@ -82,9 +82,12 @@ namespace AIRRAC {
     // which all of the other BOM objects of the airline yield store will be
     // attached
     assert (lSTDAIR_Service_ptr != NULL);
-    const stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
+    stdair::YieldStoreKey lKey (iAirlineCode);
     stdair::YieldStore& lYieldStore =
-      stdair::CmdBomManager::createYieldStore (lBomRoot, iAirlineCode);
+      stdair::FacBomManager::create<stdair::YieldStore> (lKey);
+    stdair::FacBomManager::addToListAndMap (lBomRoot, lYieldStore);
+    stdair::FacBomManager::linkWithParent (lBomRoot, lYieldStore);
 
     // Initialise the service context
     initServiceContext (iAirlineCode, lYieldStore);
@@ -111,9 +114,12 @@ namespace AIRRAC {
     // which all of the other BOM objects of the airline yield store will be
     // attached
     assert (lSTDAIR_Service_ptr != NULL);
-    const stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
+    stdair::YieldStoreKey lKey (iAirlineCode);
     stdair::YieldStore& lYieldStore =
-      stdair::CmdBomManager::createYieldStore (lBomRoot, iAirlineCode);
+      stdair::FacBomManager::create<stdair::YieldStore> (lKey);
+    stdair::FacBomManager::addToListAndMap (lBomRoot, lYieldStore);
+    stdair::FacBomManager::linkWithParent (lBomRoot, lYieldStore);
 
     // Initialise the service context
     initServiceContext (iAirlineCode, lYieldStore);

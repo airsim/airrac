@@ -10,6 +10,8 @@
 #include <map>
 // Boost
 #include <boost/shared_ptr.hpp>
+// STDAIR
+#include <STDAIR_Types.hpp>
 
 namespace AIRRAC {
 

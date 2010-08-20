@@ -4,9 +4,7 @@
 // STL
 #include <cassert>
 #include <string>
-// StdAir
-#include <stdair/basic/DictionaryManager.hpp>
-// Airrac
+// AIRRAC
 #include <airrac/command/YieldParserHelper.hpp>
 #include <airrac/command/YieldParser.hpp>
 
