@@ -1,12 +1,14 @@
-## bom sub-directory
+## airrac/bom sub-directory
 include $(top_srcdir)/Makefile.common
 include $(srcdir)/sources.mk
 
-noinst_LTLIBRARIES= libbom.la
+#
+noinst_LTLIBRARIES = libairracbom.la
 
-libbom_la_SOURCES= $(bom_h_sources) $(bom_cc_sources) 
-libbom_la_CXXFLAGS =
-libbom_la_LDFLAGS =
+libairracbom_la_SOURCES = $(airrac_bom_h_sources) $(airrac_bom_cc_sources) 
+libairracbom_la_CXXFLAGS = $(STDAIR_CFLAGS)
+libairracbom_la_LDFLAGS =
 
+#
 #pkgincludedir = $(includedir)/@PACKAGE@/bom
-#pkginclude_HEADERS = $(bom_h_sources)
+#pkginclude_HEADERS = $(airrac_bom_h_sources)

@@ -1,13 +1,15 @@
-## command sub-directory
+## airrac/command sub-directory
 include $(top_srcdir)/Makefile.common
 include $(srcdir)/sources.mk
 
-noinst_LTLIBRARIES= libcmd.la
+#
+noinst_LTLIBRARIES = libairraccmd.la
 
-libcmd_la_SOURCES= $(cmd_h_sources) $(cmd_cc_sources) 
-libcmd_la_CXXFLAGS = $(BOOST_CFLAGS)
-libcmd_la_LIBADD =
-libcmd_la_LDFLAGS = $(BOOST_LIBS)
+libairraccmd_la_SOURCES = $(airrac_cmd_h_sources) $(airrac_cmd_cc_sources)
+libairraccmd_la_CXXFLAGS = $(BOOST_CFLAGS) $(STDAIR_CFLAGS)
+libairraccmd_la_LIBADD =
+libairraccmd_la_LDFLAGS =
 
+#
 #pkgincludedir = $(includedir)/@PACKAGE@/command
-#pkginclude_HEADERS = $(cmd_h_sources)
+#pkginclude_HEADERS = $(airrac_cmd_h_sources)

@@ -1,11 +1,14 @@
-## basic sub-directory
+## airrac/basic sub-directory
 include $(top_srcdir)/Makefile.common
 include $(srcdir)/sources.mk
 
-noinst_LTLIBRARIES= libbas.la
+#
+noinst_LTLIBRARIES = libairracbas.la
 
-libbas_la_SOURCES= $(bas_h_sources) $(bas_cc_sources) 
-libbas_la_CXXFLAGS =
+libairracbas_la_SOURCES= $(airrac_bas_h_sources) $(airrac_bas_cc_sources) 
+libairracbas_la_CXXFLAGS = $(STDAIR_CFLAGS)
+libairracbas_la_LDFLAGS =
 
+#
 #pkgincludedir = $(includedir)/@PACKAGE@/basic
-#pkginclude_HEADERS = $(bas_h_sources)
+#pkginclude_HEADERS = $(airrac_bas_h_sources)
