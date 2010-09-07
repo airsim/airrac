@@ -14,11 +14,8 @@ TESTS = $(check_PROGRAMS)
 XFAIL_TESTS = #
 
 YieldTestSuite_SOURCES = YieldTestSuite.hpp YieldTestSuite.cpp
-YieldTestSuite_CXXFLAGS= $(CPPUNIT_CFLAGS) $(BOOST_CFLAGS)
+YieldTestSuite_CXXFLAGS= $(CPPUNIT_CFLAGS) $(BOOST_CFLAGS) $(STDAIR_CFLAGS)
 YieldTestSuite_LDADD =
 YieldTestSuite_LDFLAGS = \
-		$(BOOST_LIBS) $(CPPUNIT_LIBS) \
-		$(top_builddir)/extracppunit/libextracppunit.la \
-		$(top_builddir)/stdair/core/libstdair.la \
+		$(BOOST_LIBS) $(CPPUNIT_LIBS) $(EXTRACC_LIBS) $(STDAIR_LIBS) \
 		$(top_builddir)/airrac/core/libairrac.la
-
