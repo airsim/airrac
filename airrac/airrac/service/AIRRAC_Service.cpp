@@ -48,8 +48,8 @@ namespace AIRRAC {
     // attached
     assert (ioSTDAIR_Service_ptr != NULL);
     stdair::BomRoot& lBomRoot = ioSTDAIR_Service_ptr->getBomRoot();
-    stdair::YieldStore* lYieldStore_ptr =
-      stdair::BomManager::getChildPtr<stdair::YieldStore>(lBomRoot,iAirlineCode);
+    stdair::YieldStore* lYieldStore_ptr = stdair::BomManager::
+      getObjectPtr<stdair::YieldStore> (lBomRoot, iAirlineCode);
     assert (lYieldStore_ptr != NULL);
             
     // Initialise the service context
@@ -85,9 +85,9 @@ namespace AIRRAC {
     stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
     stdair::YieldStoreKey lKey (iAirlineCode);
     stdair::YieldStore& lYieldStore =
-      stdair::FacBomManager::create<stdair::YieldStore> (lKey);
-    stdair::FacBomManager::addToListAndMap (lBomRoot, lYieldStore);
-    stdair::FacBomManager::linkWithParent (lBomRoot, lYieldStore);
+      stdair::FacBom<stdair::YieldStore>::instance().create (lKey);
+    stdair::FacBomManager::instance().addToListAndMap (lBomRoot, lYieldStore);
+    stdair::FacBomManager::instance().linkWithParent (lBomRoot, lYieldStore);
 
     // Initialise the service context
     initServiceContext (iAirlineCode, lYieldStore);
@@ -117,9 +117,9 @@ namespace AIRRAC {
     stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
     stdair::YieldStoreKey lKey (iAirlineCode);
     stdair::YieldStore& lYieldStore =
-      stdair::FacBomManager::create<stdair::YieldStore> (lKey);
-    stdair::FacBomManager::addToListAndMap (lBomRoot, lYieldStore);
-    stdair::FacBomManager::linkWithParent (lBomRoot, lYieldStore);
+      stdair::FacBom<stdair::YieldStore>::instance().create (lKey);
+    stdair::FacBomManager::instance().addToListAndMap (lBomRoot, lYieldStore);
+    stdair::FacBomManager::instance().linkWithParent (lBomRoot, lYieldStore);
 
     // Initialise the service context
     initServiceContext (iAirlineCode, lYieldStore);
