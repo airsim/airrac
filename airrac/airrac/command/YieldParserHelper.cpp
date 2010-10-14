@@ -18,13 +18,13 @@ namespace AIRRAC {
     // //////////////////////////////////////////////////////////////////
 
     ParserSemanticAction::
-    ParserSemanticAction (YieldStruct_T& ioYield)
+    ParserSemanticAction (YieldStruct& ioYield)
       : _yield (ioYield) {
     }      
 
     // //////////////////////////////////////////////////////////////////
     storeSnapshotDate::
-    storeSnapshotDate (YieldStruct_T& ioYield)
+    storeSnapshotDate (YieldStruct& ioYield)
       : ParserSemanticAction (ioYield) {
     }
     
@@ -36,7 +36,7 @@ namespace AIRRAC {
       
     // //////////////////////////////////////////////////////////////////
     storeAirlineCode::
-    storeAirlineCode (YieldStruct_T& ioYield)
+    storeAirlineCode (YieldStruct& ioYield)
       : ParserSemanticAction (ioYield) {
     }
     
@@ -52,7 +52,7 @@ namespace AIRRAC {
     }
       
     // //////////////////////////////////////////////////////////////////
-    doEndYield::doEndYield (stdair::BomRoot& ioBomRoot, YieldStruct_T& ioYield)
+    doEndYield::doEndYield (stdair::BomRoot& ioBomRoot, YieldStruct& ioYield)
       : ParserSemanticAction (ioYield), _bomRoot (ioBomRoot) {
     }
     
@@ -146,7 +146,7 @@ namespace AIRRAC {
 
     // //////////////////////////////////////////////////////////////////
     YieldParser::YieldParser (stdair::BomRoot& ioBomRoot,
-                                YieldStruct_T& ioYield) 
+                              YieldStruct& ioYield) 
       : _bomRoot (ioBomRoot), _yield (ioYield) {
     }
 

@@ -29,15 +29,15 @@ namespace AIRRAC {
     /** Generic Semantic Action (Actor / Functor) for the Yield Parser. */
     struct ParserSemanticAction {
       /** Actor Constructor. */
-      ParserSemanticAction (YieldStruct_T&);
+      ParserSemanticAction (YieldStruct&);
       /** Actor Context. */
-      YieldStruct_T& _yield;
+      YieldStruct& _yield;
     };
       
     /** Store the snapshot date. */
     struct storeSnapshotDate : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeSnapshotDate (YieldStruct_T&);
+      storeSnapshotDate (YieldStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -45,7 +45,7 @@ namespace AIRRAC {
     /** Store the parsed airline code. */
     struct storeAirlineCode : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeAirlineCode (YieldStruct_T&);
+      storeAirlineCode (YieldStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -53,7 +53,7 @@ namespace AIRRAC {
     /** Mark the end of the yield parsing. */
     struct doEndYield : public ParserSemanticAction {
       /** Actor Constructor. */
-      doEndYield (stdair::BomRoot&, YieldStruct_T&);
+      doEndYield (stdair::BomRoot&, YieldStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
       /** Actor Specific Context. */
@@ -81,7 +81,7 @@ namespace AIRRAC {
     struct YieldParser : 
       public boost::spirit::classic::grammar<YieldParser> {
 
-      YieldParser (stdair::BomRoot&, YieldStruct_T&);
+      YieldParser (stdair::BomRoot&, YieldStruct&);
 
       template <typename ScannerT>
       struct definition {
@@ -97,7 +97,7 @@ namespace AIRRAC {
 
       // Parser Context
       stdair::BomRoot& _bomRoot;
-      YieldStruct_T& _yield;
+      YieldStruct& _yield;
     };
 
   }
@@ -141,7 +141,7 @@ namespace AIRRAC {
     stdair::BomRoot& _bomRoot;
 
     /** Yield Structure. */
-    YieldStruct_T _yield;
+    YieldStruct _yield;
   };
     
 }

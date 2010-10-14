@@ -15,7 +15,7 @@
 namespace AIRRAC {
 
   /** Utility Structure for the parsing of Flight-Date structures. */
-  struct YieldStruct_T : public stdair::StructAbstract {
+  struct YieldStruct : public stdair::StructAbstract {
     
     /** Set the date from the staging details. */
     stdair::Date_T getDate() const;
@@ -27,7 +27,7 @@ namespace AIRRAC {
     const std::string describe() const;
 
     /** Constructor. */
-    YieldStruct_T ();
+    YieldStruct ();
 
     // Attributes
     stdair::AirlineCode_T _airlineCode;
