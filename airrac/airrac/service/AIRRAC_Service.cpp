@@ -197,10 +197,11 @@ namespace AIRRAC {
     const bool doesExistAndIsReadable =
       stdair::BasFileMgr::doesExistAndIsReadable (iYieldStoreInputFilename);
     if (doesExistAndIsReadable == false) {
-      STDAIR_LOG_ERROR ("The yield store input file, '"
-                        << iYieldStoreInputFilename
-                        << "', can not be retrieved on the file-system");
-      throw stdair::FileNotFoundException();
+      std::ostringstream oMessage;
+      oMessage << "The yield store input file, '"
+               << iYieldStoreInputFilename
+               << "', can not be retrieved on the file-system";
+      throw stdair::FileNotFoundException (oMessage.str());
     }
 
     // Retrieve the Airrac service context
