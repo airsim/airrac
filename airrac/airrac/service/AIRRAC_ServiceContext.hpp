@@ -9,7 +9,8 @@
 // Boost
 #include <boost/shared_ptr.hpp>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
+#include <stdair/stdair_basic_types.hpp>
+#include <stdair/stdair_service_types.hpp>
 #include <stdair/bom/YieldStore.hpp>
 // Airrac
 #include <airrac/AIRRAC_Types.hpp>

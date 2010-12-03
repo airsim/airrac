@@ -7,10 +7,10 @@
 // STL
 #include <string>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
+#include <stdair/stdair_basic_types.hpp>
 #include <stdair/command/CmdAbstract.hpp>
 
-// Forward declarations.
+// Forward declarations
 namespace stdair {
   class BomRoot;
 }
@@ -20,7 +20,7 @@ namespace AIRRAC {
   /** Class wrapping the parser entry point. */
   class YieldParser : public stdair::CmdAbstract {
   public:
-    /** Parses the CSV file describing an airline yield store, and generates
+    /** Parse the CSV file describing an airline yield store, and generates
         the corresponding data model in memory. It can then be used,
         for instance in a simulator.
         @param const stdair::Filename_T& The file-name of the CSV-formatted

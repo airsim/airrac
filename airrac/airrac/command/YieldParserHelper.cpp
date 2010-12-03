@@ -4,6 +4,7 @@
 // STL
 #include <cassert>
 // StdAir
+#include <stdair/stdair_exceptions.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/service/Logger.hpp>
 // Airrac
@@ -17,14 +18,12 @@ namespace AIRRAC {
     //  Semantic actions
     // //////////////////////////////////////////////////////////////////
 
-    ParserSemanticAction::
-    ParserSemanticAction (YieldStruct& ioYield)
+    ParserSemanticAction::ParserSemanticAction (YieldStruct& ioYield)
       : _yield (ioYield) {
     }      
 
     // //////////////////////////////////////////////////////////////////
-    storeSnapshotDate::
-    storeSnapshotDate (YieldStruct& ioYield)
+    storeSnapshotDate::storeSnapshotDate (YieldStruct& ioYield)
       : ParserSemanticAction (ioYield) {
     }
     
@@ -35,8 +34,7 @@ namespace AIRRAC {
     }
       
     // //////////////////////////////////////////////////////////////////
-    storeAirlineCode::
-    storeAirlineCode (YieldStruct& ioYield)
+    storeAirlineCode::storeAirlineCode (YieldStruct& ioYield)
       : ParserSemanticAction (ioYield) {
     }
     
@@ -145,15 +143,13 @@ namespace AIRRAC {
     // //////////////////////////////////////////////////////////////////
 
     // //////////////////////////////////////////////////////////////////
-    YieldParser::YieldParser (stdair::BomRoot& ioBomRoot,
-                              YieldStruct& ioYield) 
+    YieldParser::YieldParser (stdair::BomRoot& ioBomRoot, YieldStruct& ioYield) 
       : _bomRoot (ioBomRoot), _yield (ioYield) {
     }
 
     // //////////////////////////////////////////////////////////////////
     template<typename ScannerT>
-    YieldParser::definition<ScannerT>::
-    definition (YieldParser const& self) {
+    YieldParser::definition<ScannerT>::definition (YieldParser const& self) {
 
       yield_list = *( boost::spirit::classic::comment_p("//")
                       | boost::spirit::classic::comment_p("/*", "*/")

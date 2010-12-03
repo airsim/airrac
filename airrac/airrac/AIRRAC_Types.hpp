@@ -11,7 +11,7 @@
 // Boost
 #include <boost/shared_ptr.hpp>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
+#include <stdair/stdair_basic_types.hpp>
 
 namespace AIRRAC {
 
@@ -51,22 +51,6 @@ namespace AIRRAC {
 
   class BookingException : public RootException {
   };
-
-
-  // /////////////// Log /////////////
-  /** Level of logs. */
-  namespace LOG {
-    typedef enum {
-      CRITICAL = 0,
-      ERROR,
-      NOTIFICATION,
-      WARNING,
-      DEBUG,
-      VERBOSE,
-      LAST_VALUE
-    } EN_LogLevel;
-  }
-
 
   // //////// Type definitions /////////
   /** Pointer on the AIRRAC Service handler. */
