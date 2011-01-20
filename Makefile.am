@@ -1,4 +1,4 @@
-## top directory
+## top directory of the AirRAC project
 include $(top_srcdir)/Makefile.common
 
 ACLOCAL_AMFLAGS = -I config
@@ -30,7 +30,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure \
 EXTRA_DIST =
 
 # Build in these directories:
-SUBDIRS = airrac $(TEST_DIR)
+SUBDIRS = airrac samples $(TEST_DIR)
 
 
 # Configuration helpers

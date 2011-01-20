@@ -11,6 +11,7 @@
 // Airrac
 #include <airrac/AIRRAC_Types.hpp>
 #include <airrac/AIRRAC_Service.hpp>
+#include <airrac/config/airrac-paths.hpp>
 // Airrac Test Suite
 #include <test/airrac/YieldTestSuite.hpp>
 
@@ -33,7 +34,7 @@ void YieldTestSuite::simpleYieldHelper() {
     // stdair::TravelSolutionStruct lTravelSolution;
     
     // Input file name
-    stdair::Filename_T lInputFilename ("../../test/samples/invdump01.csv");
+    stdair::Filename_T lInputFilename (STDAIR_SAMPLE_DIR "/invdump01.csv");
 
     // Output log File
     stdair::Filename_T lLogFilename ("YieldTestSuite.log");

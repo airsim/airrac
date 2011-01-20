@@ -25,7 +25,7 @@ int main (int argc, char* argv[]) {
     // stdair::TravelSolutionStruct lTravelSolution;
     
     // Input file name
-    stdair::Filename_T lInputFilename ("../../test/samples/yieldstore01.csv");
+    stdair::Filename_T lInputFilename (STDAIR_SAMPLE_DIR "/yieldstore01.csv");
 
     // Output log File
     stdair::Filename_T lLogFilename ("airrac.log");

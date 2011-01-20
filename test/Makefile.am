@@ -4,7 +4,7 @@ include $(top_srcdir)/Makefile.common
 MAINTAINERCLEANFILES = Makefile.in
 
 ##
-SUBDIRS = samples airrac
+SUBDIRS = airrac
 
 EXTRA_DIST =
 
