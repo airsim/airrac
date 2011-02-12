@@ -1,88 +1,107 @@
+/*!
+ * \page YieldTestSuite_cpp Command-Line Test to Demonstrate How To Test the AirRAC Project
+ * \code
+ */
+// //////////////////////////////////////////////////////////////////////
+// Import section
+// //////////////////////////////////////////////////////////////////////
 // STL
 #include <sstream>
 #include <fstream>
 #include <string>
-// CPPUNIT
-#include <extracppunit/CppUnitCore.hpp>
+// Boost Unit Test Framework (UTF)
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MAIN
+#define BOOST_TEST_MODULE YieldTestSuite
+#include <boost/test/unit_test.hpp>
 // StdAir
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
+#include <stdair/basic/BasFileMgr.hpp>
 #include <stdair/bom/TravelSolutionStruct.hpp>
+#include <stdair/service/Logger.hpp>
 // Airrac
-#include <airrac/AIRRAC_Types.hpp>
 #include <airrac/AIRRAC_Service.hpp>
 #include <airrac/config/airrac-paths.hpp>
-// Airrac Test Suite
-#include <test/airrac/YieldTestSuite.hpp>
 
-// //////////////////////////////////////////////////////////////////////
-// Test is based on ...
-// //////////////////////////////////////////////////////////////////////
+namespace boost_utf = boost::unit_test;
 
-// //////////////////////////////////////////////////////////////////////
-void YieldTestSuite::simpleYieldHelper() {
+// (Boost) Unit Test XML Report
+std::ofstream utfReportStream ("YieldTestSuite_utfresults.xml");
 
-  try {
-    
-    // Airline code
-    const std::string lAirlineCode ("SV");
-    
-    // Number of passengers in the travelling group
-    // const stdair::PartySize_T lPartySize = 5;
-
-    // Travel solution
-    // stdair::TravelSolutionStruct lTravelSolution;
-    
-    // Input file name
-    stdair::Filename_T lInputFilename (STDAIR_SAMPLE_DIR "/invdump01.csv");
-
-    // Output log File
-    stdair::Filename_T lLogFilename ("YieldTestSuite.log");
-
-    // Set the log parameters
-    std::ofstream logOutputFile;
-    // Open and clean the log outputfile
-    logOutputFile.open (lLogFilename.c_str());
-    logOutputFile.clear();
-    
-    // Initialise the list of classes/buckets
-    const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-    AIRRAC::AIRRAC_Service airracService (lLogParams, lAirlineCode,
-                                          lInputFilename);
-
-    // Make a booking
-    // airracService.sell (lTravelSolution, lPartySize);
-    
-  } catch (const AIRRAC::RootException& otexp) {
-    std::cerr << "Standard exception: " << otexp.what() << std::endl;
-    return;
-    
-  } catch (const std::exception& stde) {
-    std::cerr << "Standard exception: " << stde.what() << std::endl;
-    return;
-    
-  } catch (...) {
-    return;
+/**
+ * Configuration for the Boost Unit Test Framework (UTF)
+ */
+struct UnitTestConfig {
+  /** Constructor. */
+  UnitTestConfig() {
+    boost_utf::unit_test_log.set_stream (utfReportStream);
+    boost_utf::unit_test_log.set_format (boost_utf::XML);
+    boost_utf::unit_test_log.set_threshold_level (boost_utf::log_test_units);
+    //boost_utf::unit_test_log.set_threshold_level (boost_utf::log_successful_tests);
   }
+
+  /** Destructor. */
+  ~UnitTestConfig() {
+  }
+};
+
+
+// /////////////// Main: Unit Test Suite //////////////
+
+// Set the UTF configuration (re-direct the output to a specific file)
+BOOST_GLOBAL_FIXTURE (UnitTestConfig);
+
+// Start the test suite
+BOOST_AUTO_TEST_SUITE (master_test_suite)
+
+/**
+ * Test a simple inventory sell
+ */
+BOOST_AUTO_TEST_CASE (airrac_simple_yield) {
+
+  // Airline code
+  const stdair::AirlineCode_T lAirlineCode ("SV");
+    
+  // Travel solution
+  stdair::TravelSolutionStruct lTravelSolution;
+    
+  // Input file name
+  const stdair::Filename_T lYieldInputFilename (STDAIR_SAMPLE_DIR
+                                                "/invdump01.csv");
+
+  // Check that the file path given as input corresponds to an actual file
+  bool doesExistAndIsReadable =
+    stdair::BasFileMgr::doesExistAndIsReadable (lYieldInputFilename);
+  BOOST_CHECK_MESSAGE (doesExistAndIsReadable == true,
+                       "The '" << lYieldInputFilename
+                       << "' input file can not be open and read");
+
+  // Output log File
+  const stdair::Filename_T lLogFilename ("YieldTestSuite.log");
   
+  // Set the log parameters
+  std::ofstream logOutputFile;
+  // Open and clean the log outputfile
+  logOutputFile.open (lLogFilename.c_str());
+  logOutputFile.clear();
+  
+  // Initialise the list of classes/buckets
+  const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
+  AIRRAC::AIRRAC_Service airracService (lLogParams, lAirlineCode,
+                                        lYieldInputFilename);
+  
+  // Calculate the yields for the given travel solution
+  airracService.calculateYield (lTravelSolution);
+
+  // Close the log file
+  logOutputFile.close();
 }
 
-// //////////////////////////////////////////////////////////////////////
-void YieldTestSuite::simpleYield () {
-  // TODO: Check that the yield goes as expected
-  CPPUNIT_ASSERT_NO_THROW ( simpleYieldHelper(););
-}
+// End the test suite
+BOOST_AUTO_TEST_SUITE_END()
 
-// //////////////////////////////////////////////////////////////////////
-// void YieldTestSuite::errorCase () {
-//  CPPUNIT_ASSERT (false);
-// }
-
-// //////////////////////////////////////////////////////////////////////
-YieldTestSuite::YieldTestSuite () {
-  _describeKey << "Running test on yield";  
-}
-
-// /////////////// M A I N /////////////////
-CPPUNIT_MAIN()
+/*!
+ * \endcode
+ */
 
