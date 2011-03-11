@@ -238,6 +238,7 @@ AC_CONFIG_FILES(
 	airrac/core/Makefile
 	airrac/batches/Makefile
 	samples/Makefile
+	samples/RDS01/Makefile
 	test/Makefile
 	test/airrac/Makefile
 )
