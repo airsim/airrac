@@ -48,7 +48,7 @@ namespace AIRRAC {
     stdair::minute_t _itMinutes;
     stdair::second_t _itSeconds;   
 
-    /** Fare ID. */
+    /** Yield ID. */
     YieldID_T _yieldId;
 
     /** Origin. */
@@ -57,16 +57,16 @@ namespace AIRRAC {
     /** Destination. */
     stdair::AirportCode_T _destination;
 
-    /** Start Range date available for this fare rule.*/
+    /** Start Range date available for this yield rule.*/
     stdair::Date_T _dateRangeStart;
 
-    /** Start Range date available for this fare rule.*/
+    /** Start Range date available for this yield rule.*/
     stdair::Date_T _dateRangeEnd;
     
-    /** Start time from the time range available for this fare rule.*/
+    /** Start time from the time range available for this yield rule.*/
     stdair::Duration_T _timeRangeStart;
      
-    /** End time from the time range available for this fare rule.*/
+    /** End time from the time range available for this yield rule.*/
     stdair::Duration_T _timeRangeEnd;
     
     /** Yield.*/
