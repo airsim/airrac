@@ -31,7 +31,7 @@ namespace AIRRAC {
       iYieldRuleStruct._destination;
     const stdair::AirportPairKey lAirportPairKey (lBoardPoint, lOffPoint);
   
-    // If the AirportPairKey object corresponding to the fare rule set
+    // If the AirportPairKey object corresponding to the yield rule set
     // having the same origin and destination airport does not exist, create
     // it and link it to the ioBomRoot object.
     stdair::AirportPair* lAirportPair_ptr = stdair::BomManager::
@@ -46,7 +46,7 @@ namespace AIRRAC {
     }
     assert (lAirportPair_ptr != NULL);
 
-    // Set the fare date-period primary key.
+    // Set the yield date-period primary key.
     const stdair::Date_T& lDateRangeStart = 
       iYieldRuleStruct._dateRangeStart;
     const stdair::Date_T& lDateRangeEnd = 
@@ -54,7 +54,7 @@ namespace AIRRAC {
     const stdair::DatePeriod_T lDatePeriod (lDateRangeStart, lDateRangeEnd); 
     const stdair::DatePeriodKey lYieldDatePeriodKey (lDatePeriod);
 
-    // If the YieldDatePeriodeKey object corresponding to the fare rule set
+    // If the YieldDatePeriodeKey object corresponding to the yield rule set
     // does not exist, create it and link it to the YieldPosChannel object.     
     stdair::DatePeriod* lYieldDatePeriod_ptr = stdair::BomManager::
       getObjectPtr<stdair::DatePeriod> (*lAirportPair_ptr, 
@@ -69,7 +69,7 @@ namespace AIRRAC {
     }
     assert (lYieldDatePeriod_ptr != NULL);
    
-    // Set the fare time-period primary key.
+    // Set the yield time-period primary key.
     const stdair::Time_T& lTimeRangeStart
       = iYieldRuleStruct._timeRangeStart;
     const stdair::Time_T& lTimeRangeEnd
@@ -77,7 +77,7 @@ namespace AIRRAC {
     const stdair::TimePeriodKey lYieldTimePeriodKey (lTimeRangeStart,
                                                     lTimeRangeEnd);
 
-    // If the YieldTimePeriodeKey object corresponding to the fare rule set
+    // If the YieldTimePeriodeKey object corresponding to the yield rule set
     // does not exist, create it and link it to the YieldPosChannel object.     
     stdair::TimePeriod* lYieldTimePeriod_ptr = stdair::BomManager::
       getObjectPtr<stdair::TimePeriod> (*lYieldDatePeriod_ptr, 
@@ -100,7 +100,7 @@ namespace AIRRAC {
     const YieldRuleFeaturesKey lYieldRuleFeaturesKey (lCabinCode,
                                                       lYield);
 
-    // If the YieldTimePeriodeKey object corresponding to the fare rule set
+    // If the YieldTimePeriodeKey object corresponding to the yield rule set
     // does not exist, create it and link it to the YieldPosChannel object.     
     YieldRuleFeatures* lYieldRuleFeatures_ptr = stdair::BomManager::
       getObjectPtr<YieldRuleFeatures > (*lYieldDatePeriod_ptr, 
