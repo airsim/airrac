@@ -22,6 +22,7 @@ namespace AIRRAC {
       _dateRangeEnd(stdair::DEFAULT_DATE),
       _timeRangeStart(stdair::DEFAULT_EPSILON_DURATION),
       _timeRangeEnd(stdair::DEFAULT_EPSILON_DURATION),
+      _cabinCode(""), 
       _yield(0),
       _airlineCode(""), 
       _classCode("") { 
@@ -50,7 +51,8 @@ namespace AIRRAC {
 	 << _dateRangeStart << "/" << _dateRangeEnd << "] - ["
 	 << boost::posix_time::to_simple_string(_timeRangeStart) << "/"
 	 << boost::posix_time::to_simple_string(_timeRangeEnd) << "]\n    "
-         << "-Yield-   " << _yield << "\n           ";
+         << "-Cabin code- " << _cabinCode << "\n    "
+         << "-Yield-      " << _yield << "\n           ";
     assert (_airlineCodeList.size() == _classCodeList.size());
     stdair::ClassList_StringList_T::const_iterator lItCurrentClassCode =
       _classCodeList.begin();

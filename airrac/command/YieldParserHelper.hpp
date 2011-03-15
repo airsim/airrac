@@ -104,6 +104,16 @@ namespace AIRRAC {
                        boost::spirit::qi::unused_type) const;
     };
 
+    /** Store the cabin code. */
+    struct storeCabinCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCabinCode  (YieldRuleStruct&);
+      /** Actor Function (functor). */
+      void operator() (char,
+                       boost::spirit::qi::unused_type,
+                       boost::spirit::qi::unused_type) const;
+    };
+
      /** Store the parsed yield value. */
     struct storeYield : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -181,8 +191,8 @@ namespace AIRRAC {
       boost::spirit::qi::rule<stdair::iterator_t,
                               boost::spirit::ascii::space_type>
       start, comments, yield_rule, yield_id, origin, destination, dateRangeStart,
-        dateRangeEnd, date, timeRangeStart, timeRangeEnd, time, yield, segment,
-        yield_rule_end;
+        dateRangeEnd, date, timeRangeStart, timeRangeEnd, time, yield, cabinCode,
+        segment, yield_rule_end;
       
       // Parser Context
       stdair::BomRoot& _bomRoot;

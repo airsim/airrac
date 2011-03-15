@@ -145,6 +145,27 @@ namespace AIRRAC {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeCabinCode ::
+    storeCabinCode (YieldRuleStruct& ioYieldRule)
+      : ParserSemanticAction (ioYieldRule) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeCabinCode::operator() (char iChar,
+                                     boost::spirit::qi::unused_type,
+                                     boost::spirit::qi::unused_type) const {
+      std::ostringstream ostr;
+      ostr << iChar;
+      std::string cabinCodeStr = ostr.str();
+      const stdair::CabinCode_T lCabinCode (cabinCodeStr);
+      _yieldRule._cabinCode = lCabinCode;
+     
+      // DEBUG
+      //STDAIR_LOG_DEBUG ("Cabin Code: " << lCabinCode);                 
+    
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeYield::
     storeYield (YieldRuleStruct& ioYieldRule)
       : ParserSemanticAction (ioYieldRule) {
@@ -275,7 +296,7 @@ namespace AIRRAC {
         >> ';' >> origin >> ';' >> destination
         >> ';' >> dateRangeStart >> ';' >> dateRangeEnd
         >> ';' >> timeRangeStart >> ';' >> timeRangeEnd
-        >> ';' >> yield
+        >> ';' >> cabinCode >> ';' >> yield
         >> +( ';' >> segment )
         >> yield_rule_end[doEndYield(_bomRoot, _yieldRule)];
         ;
@@ -308,6 +329,8 @@ namespace AIRRAC {
         >> minute_p[boost::phoenix::ref(_yieldRule._itMinutes) = bsq::labels::_1]      
         >> - (':' >> second_p[boost::phoenix::ref(_yieldRule._itSeconds) = bsq::labels::_1]) ];
 
+      cabinCode = bsa::char_("A-Z")[storeCabinCode(_yieldRule)];
+
       yield = bsq::double_[storeYield(_yieldRule)];
 
       segment = bsq::repeat(2)[bsa::char_("A-Z")][storeAirlineCode(_yieldRule)]
@@ -329,6 +352,7 @@ namespace AIRRAC {
       BOOST_SPIRIT_DEBUG_NODE (timeRangeStart);
       BOOST_SPIRIT_DEBUG_NODE (timeRangeEnd);
       BOOST_SPIRIT_DEBUG_NODE (time);
+      BOOST_SPIRIT_DEBUG_NODE (cabinCode);
       BOOST_SPIRIT_DEBUG_NODE (yield);
       BOOST_SPIRIT_DEBUG_NODE (segment);
       BOOST_SPIRIT_DEBUG_NODE (yield_rule_end);

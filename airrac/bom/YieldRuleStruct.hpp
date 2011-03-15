@@ -21,6 +21,9 @@ namespace AIRRAC {
 
   /** Utility Structure for the parsing of Flight-Date structures. */
   struct YieldRuleStruct : public stdair::StructAbstract {
+
+    /** Constructor. */
+    YieldRuleStruct ();
     
     /** Set the date from the staging details. */
     stdair::Date_T getDate() const;
@@ -31,8 +34,15 @@ namespace AIRRAC {
     /** Give a description of the structure (for display purposes). */
     const std::string describe() const;
 
-    /** Constructor. */
-    YieldRuleStruct ();
+    /** Get the size of the airline code list. */
+    const unsigned int getAirlineListSize () const {
+      return _airlineCodeList.size();
+    }
+
+    /** Get the size of the class code list. */
+    const unsigned int getClassCodeListSize () const {
+      return _classCodeList.size();
+    }
     
   public:
 
@@ -71,6 +81,9 @@ namespace AIRRAC {
     
     /** Yield.*/
     stdair::YieldValue_T _yield;
+
+    /** Cabin code. */
+    stdair::CabinCode_T _cabinCode;
 
     /** Airline code */
     stdair::AirlineCode_T _airlineCode;
