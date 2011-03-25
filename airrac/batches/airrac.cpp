@@ -14,6 +14,7 @@
 // StdAir
 #include <stdair/STDAIR_Service.hpp>
 #include <stdair/service/Logger.hpp>
+#include <stdair/command/CmdBomManager.hpp>
 // Airrac
 #include <airrac/AIRRAC_Service.hpp>
 #include <airrac/config/airrac-paths.hpp>
@@ -29,49 +30,16 @@ const std::string K_AIRRAC_DEFAULT_LOG_FILENAME ("airrac.log");
 /** Default name and location for the (CSV) input file. */
 const std::string K_AIRRAC_DEFAULT_YIELD_INPUT_FILENAME (STDAIR_SAMPLE_DIR "/yieldstore01.csv");
 
-/** Default query string. */
-const std::string K_AIRRAC_DEFAULT_QUERY_STRING ("my good old query");
+/** Default for the input type. It can be either built-in or provided by an
+    input file. That latter must then be given with the -i option. */
+const bool K_AIRRAC_DEFAULT_BUILT_IN_INPUT = false;
 
+/** Default for the input type. The BOM tree can be built from either an
+    yield dump or from a yield file. */
+const bool K_AIRRAC_DEFAULT_FOR_YIELD = false;
 
-// //////////////////////////////////////////////////////////////////////
-void tokeniseStringIntoWordList (const std::string& iPhrase,
-                                 WordList_T& ioWordList) {
-  // Empty the word list
-  ioWordList.clear();
-  
-  // Boost Tokeniser
-  typedef boost::tokenizer<boost::char_separator<char> > Tokeniser_T;
-  
-  // Define the separators
-  const boost::char_separator<char> lSepatorList(" .,;:|+-*/_=!@#$%`~^&(){}[]?'<>\"");
-  
-  // Initialise the phrase to be tokenised
-  Tokeniser_T lTokens (iPhrase, lSepatorList);
-  for (Tokeniser_T::const_iterator tok_iter = lTokens.begin();
-       tok_iter != lTokens.end(); ++tok_iter) {
-    const std::string& lTerm = *tok_iter;
-    ioWordList.push_back (lTerm);
-  }
-  
-}
-
-// //////////////////////////////////////////////////////////////////////
-std::string createStringFromWordList (const WordList_T& iWordList) {
-  std::ostringstream oStr;
-
-  unsigned short idx = iWordList.size();
-  for (WordList_T::const_iterator itWord = iWordList.begin();
-       itWord != iWordList.end(); ++itWord, --idx) {
-    const std::string& lWord = *itWord;
-    oStr << lWord;
-    if (idx > 1) {
-      oStr << " ";
-    }
-  }
-  
-  return oStr.str();
-}
-
+/** Early return status (so that it can be differentiated from an error). */
+const int K_AIRRAC_EARLY_RETURN_STATUS = 99;
 
 // ///////// Parsing of Options & Configuration /////////
 // A helper function to simplify the main part.
@@ -81,23 +49,17 @@ template<class T> std::ostream& operator<< (std::ostream& os,
   return os;
 }
 
-/** Early return status (so that it can be differentiated from an error). */
-const int K_AIRRAC_EARLY_RETURN_STATUS = 99;
-
 /** Read and parse the command line options. */
-int readConfiguration (int argc, char* argv[], 
-                       std::string& ioQueryString,
+int readConfiguration (int argc, char* argv[],
+                       bool& ioIsBuiltin, bool& ioIsForYield,
                        stdair::Filename_T& ioYieldInputFilename,
                        std::string& ioLogFilename) {
 
-  // Initialise the travel query string, if that one is empty
-  if (ioQueryString.empty() == true) {
-    ioQueryString = K_AIRRAC_DEFAULT_QUERY_STRING;
-  }
-  
-  // Transform the query string into a list of words (STL strings)
-  WordList_T lWordList;
-  tokeniseStringIntoWordList (ioQueryString, lWordList);
+  // Default for the built-in input
+  ioIsBuiltin = K_AIRRAC_DEFAULT_BUILT_IN_INPUT;
+
+  // Default for the yield option
+  ioIsForYield = K_AIRRAC_DEFAULT_FOR_YIELD;
 
   // Declare a group of options that will be allowed only on command line
   boost::program_options::options_description generic ("Generic options");
@@ -110,15 +72,16 @@ int readConfiguration (int argc, char* argv[],
   // line and in config file
   boost::program_options::options_description config ("Configuration");
   config.add_options()
-    ("input,i",
+    ("builtin,b",
+     "The sample BOM tree can be either built-in or parsed from an input file. That latter must then be given with the -y/--yield option")
+    ("for_schedule,f",
+     "The BOM tree should be built from a yield file (instead of from a yield dump)")
+    ("yield,y",
      boost::program_options::value< std::string >(&ioYieldInputFilename)->default_value(K_AIRRAC_DEFAULT_YIELD_INPUT_FILENAME),
-     "(CVS) input file for the yields")
+     "(CVS) input file for the schedule")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_AIRRAC_DEFAULT_LOG_FILENAME),
-     "Filepath for the logs")
-    ("query,q",
-     boost::program_options::value< WordList_T >(&lWordList)->multitoken(),
-     "Query word list")
+     "Filename for the logs")
     ;
 
   // Hidden options, will be allowed both on command line and
@@ -149,25 +112,70 @@ int readConfiguration (int argc, char* argv[],
   std::ifstream ifs ("airrac.cfg");
   boost::program_options::store (parse_config_file (ifs, config_file_options),
                                  vm);
-  boost::program_options::notify (vm);
-    
-  if (vm.count ("help")) {
+  boost::program_options::notify (vm); if (vm.count ("help")) {
     std::cout << visible << std::endl;
     return K_AIRRAC_EARLY_RETURN_STATUS;
   }
 
-  if (vm.count ("input")) {
-    ioYieldInputFilename = vm["input"].as< std::string >();
-    std::cout << "Input filename is: " << ioYieldInputFilename << std::endl;
+  if (vm.count ("version")) {
+    std::cout << PACKAGE_NAME << ", version " << PACKAGE_VERSION << std::endl;
+    return K_AIRRAC_EARLY_RETURN_STATUS;
+  }
+
+  if (vm.count ("prefix")) {
+    std::cout << "Installation prefix: " << PREFIXDIR << std::endl;
+    return K_AIRRAC_EARLY_RETURN_STATUS;
+  }
+
+  if (vm.count ("builtin")) {
+    ioIsBuiltin = true;
+  }
+  const std::string isBuiltinStr = (ioIsBuiltin == true)?"yes":"no";
+  std::cout << "The BOM should be built-in? " << isBuiltinStr << std::endl;
+
+  if (vm.count ("for_yield")) {
+    ioIsForYield = true;
+  }
+  const std::string isForYieldStr = (ioIsForYield == true)?"yes":"no";
+  std::cout << "The BOM should be built from yield? " << isForYieldStr
+            << std::endl;
+
+  if (ioIsBuiltin == false) {
+
+    if (ioIsForYield == false) {
+      // The BOM tree should be built from parsing a yield dump
+      if (vm.count ("yield")) {
+        ioYieldInputFilename = vm["yield"].as< std::string >();
+        std::cout << "Input yield filename is: " << ioYieldInputFilename
+                  << std::endl;
+
+      } else {
+        // The built-in option is not selected. However, no yield dump
+        // file is specified
+        std::cerr << "Either one among the -b/--builtin and -y/--yield "
+                  << "options must be specified" << std::endl;
+      }
+
+    } else {
+      // The BOM tree should be built from parsing a yield (and O&D) file
+      if (vm.count ("yield")) {
+        ioYieldInputFilename = vm["yield"].as< std::string >();
+        std::cout << "Input yield filename is: " << ioYieldInputFilename
+                  << std::endl;
+
+      } else {
+        // The built-in option is not selected. However, no yield file
+        // is specified
+        std::cerr << "Either one among the -b/--builtin and -y/--yield "
+                  << "options must be specified" << std::endl;
+      }
+    }
   }
 
   if (vm.count ("log")) {
     ioLogFilename = vm["log"].as< std::string >();
     std::cout << "Log filename is: " << ioLogFilename << std::endl;
   }
-
-  ioQueryString = createStringFromWordList (lWordList);
-  std::cout << "The query string is: " << ioQueryString << std::endl;
   
   return 0;
 }
@@ -176,35 +184,75 @@ int readConfiguration (int argc, char* argv[],
 // /////////////// M A I N /////////////////
 int main (int argc, char* argv[]) {
 
-    // Query
-    std::string lQuery;
+  // State whether the BOM tree should be built-in or parsed from an
+  // input file
+  bool isBuiltin;
+  bool isForYield;
     
-    // Yield input file name
-    stdair::Filename_T lYieldInputFilename;
+  // Yield input file name
+  stdair::Filename_T lYieldInputFilename;
+  
+  // Output log File
+  stdair::Filename_T lLogFilename;
     
-    // Output log File
-    std::string lLogFilename;
+  // Call the command-line option parser
+  const int lOptionParserStatus = 
+    readConfiguration (argc, argv, isBuiltin, isForYield,
+                       lYieldInputFilename, lLogFilename);
     
-    // Call the command-line option parser
-    const int lOptionParserStatus = 
-      readConfiguration (argc, argv, lQuery, lYieldInputFilename, lLogFilename);
-    
-    if (lOptionParserStatus == K_AIRRAC_EARLY_RETURN_STATUS) {
-      return 0;
-    }
-    
-    // Set the log parameters
-    std::ofstream logOutputFile;
-    // Open and clean the log outputfile
-    logOutputFile.open (lLogFilename.c_str());
-    logOutputFile.clear();
-    
-    // Initialise the AirRAC service object
-    const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-    AIRRAC::AIRRAC_Service airracService (lLogParams, lYieldInputFilename);
-    
-    // Close the Log outputFile
-    logOutputFile.close();
-    
+  if (lOptionParserStatus == K_AIRRAC_EARLY_RETURN_STATUS) {
     return 0;
+  }
+    
+  // Set the log parameters
+  std::ofstream logOutputFile;
+  // Open and clean the log outputfile
+  logOutputFile.open (lLogFilename.c_str());
+  logOutputFile.clear();
+    
+  // Initialise the AirRAC service object
+  const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
+  
+
+  // Check wether or not a (CSV) input file should be read
+  if (isBuiltin == true) {
+
+    // Build the BOM tree from parsing an inventory dump file
+    AIRRAC::AIRRAC_Service airracService (lLogParams);
+    
+    // DEBUG
+    STDAIR_LOG_DEBUG ("Welcome to airrac");
+
+    // Build the sample BOM tree for RMOL
+    //airracService.buildSampleBom();
+
+    // DEBUG: Display the whole BOM tree
+    //const std::string& lCSVDump = airracService.csvDisplay();
+    //STDAIR_LOG_DEBUG (lCSVDump);
+
+  } else {
+    
+    // Build the BOM tree from parsing a schedule file (and O&D list)
+    AIRRAC::AIRRAC_Service airracService (lLogParams, lYieldInputFilename);
+
+    // DEBUG
+    STDAIR_LOG_DEBUG ("Welcome to airrac");
+
+    // DEBUG: Display the whole BOM tree
+    //const std::string& lCSVDump = airracService.csvDisplay();
+    //STDAIR_LOG_DEBUG (lCSVDump);
+      
+  }
+
+  // Close the Log outputFile
+  logOutputFile.close();
+
+  /*
+    Note: as that program is not intended to be run on a server in
+    production, it is better not to catch the exceptions. When it
+    happens (that an exception is throwned), that way we get the
+    call stack.
+  */
+
+  return 0;	
 }
