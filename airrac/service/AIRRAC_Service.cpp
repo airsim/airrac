@@ -34,24 +34,39 @@ namespace AIRRAC {
   }
 
   // ////////////////////////////////////////////////////////////////////
+  AIRRAC_Service::AIRRAC_Service (const stdair::BasLogParams& iLogParams)
+    : _airracServiceContext (NULL) {
+    
+    // Initialise the STDAIR service handler
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
+      initStdAirService (iLogParams);
+    
+    // Initialise the service context
+    initServiceContext();
+
+    // Add the StdAir service context to the AIRRAC service context
+    // \note AIRRAC owns the STDAIR service resources here.
+    addStdAirService (lSTDAIR_Service_ptr);
+    
+    // Initialise the (remaining of the) context
+    initAirracService();
+  }
+
+  // ////////////////////////////////////////////////////////////////////
   AIRRAC_Service::
-  AIRRAC_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_ServicePtr,
+  AIRRAC_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_Service_ptr,
                   const stdair::Filename_T& iYieldInputFilename)
     : _airracServiceContext (NULL) {
 
     // Initialise the service context
     initServiceContext ();
-    
-    // Retrieve the Airrac service context
-    assert (_airracServiceContext != NULL);
-    AIRRAC_ServiceContext& lAIRRAC_ServiceContext =
-      *_airracServiceContext;
-    
+
     // Store the STDAIR service object within the (AIRRAC) service context
-    lAIRRAC_ServiceContext.setSTDAIR_Service (ioSTDAIR_ServicePtr);
+    // \note Airrac does not own the STDAIR service resources here.
+    addStdAirService (ioSTDAIR_Service_ptr);
     
     // Initialise the context
-    init (iYieldInputFilename);
+    initAirracService (iYieldInputFilename);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -60,15 +75,20 @@ namespace AIRRAC {
                   const stdair::BasDBParams& iDBParams,
                   const stdair::Filename_T& iYieldInputFilename) 
     : _airracServiceContext (NULL) {
+
+    // Initialise the STDAIR service handler
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
+      initStdAirService (iLogParams, iDBParams);
     
     // Initialise the service context
-    initServiceContext ();
-    
-    // Initialise the STDAIR service handler
-    initStdAirService (iLogParams, iDBParams);
-    
+    initServiceContext();
+
+    // Add the StdAir service context to the AIRRAC service context
+    // \note AIRRAC owns the STDAIR service resources here.
+    addStdAirService (lSTDAIR_Service_ptr);
+
     // Initialise the (remaining of the) context
-    init (iYieldInputFilename);
+    initAirracService (iYieldInputFilename);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -76,15 +96,20 @@ namespace AIRRAC {
   AIRRAC_Service (const stdair::BasLogParams& iLogParams,
                   const stdair::Filename_T& iYieldInputFilename) 
     : _airracServiceContext (NULL) {
+
+    // Initialise the STDAIR service handler
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
+      initStdAirService (iLogParams);
     
     // Initialise the service context
-    initServiceContext ();
-    
-    // Initialise the STDAIR service handler
-    initStdAirService (iLogParams);
+    initServiceContext();
+
+    // Add the StdAir service context to the AIRRAC service context
+    // \note AIRRAC owns the STDAIR service resources here.
+    addStdAirService (lSTDAIR_Service_ptr);
     
     // Initialise the (remaining of the) context
-    init (iYieldInputFilename);
+    initAirracService (iYieldInputFilename);
   }
 
 
@@ -108,49 +133,62 @@ namespace AIRRAC {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void AIRRAC_Service::
+  stdair::STDAIR_ServicePtr_T AIRRAC_Service::
   initStdAirService (const stdair::BasLogParams& iLogParams,
                      const stdair::BasDBParams& iDBParams) {
 
-    // Retrieve the Airrac service context
-    assert (_airracServiceContext != NULL);
-    AIRRAC_ServiceContext& lAIRRAC_ServiceContext =
-      *_airracServiceContext;
-    
-    // Initialise the STDAIR service handler
-    // Note that the track on the object memory is kept thanks to the Boost
-    // Smart Pointers component.
+    /**
+     * Initialise the STDAIR service handler.
+     *
+     * \note The (Boost.)Smart Pointer keeps track of the references
+     *       on the Service object, and deletes that object when it is
+     *       no longer referenced (e.g., at the end of the process).
+     */
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = 
       boost::make_shared<stdair::STDAIR_Service> (iLogParams, iDBParams);
-    assert (lSTDAIR_Service_ptr != NULL);
     
-    // Store the STDAIR service object within the (AIRRAC) service context
-    lAIRRAC_ServiceContext.setSTDAIR_Service (lSTDAIR_Service_ptr);
+    return lSTDAIR_Service_ptr;
+
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void AIRRAC_Service::
+  stdair::STDAIR_ServicePtr_T AIRRAC_Service::
   initStdAirService (const stdair::BasLogParams& iLogParams) {
 
-    // Retrieve the Airrac service context
-    assert (_airracServiceContext != NULL);
-    AIRRAC_ServiceContext& lAIRRAC_ServiceContext =
-      *_airracServiceContext;
-    
-    // Initialise the STDAIR service handler
-    // Note that the track on the object memory is kept thanks to the Boost
-    // Smart Pointers component.
+    /**
+     * Initialise the STDAIR service handler.
+     *
+     * \note The (Boost.)Smart Pointer keeps track of the references
+     *       on the Service object, and deletes that object when it is
+     *       no longer referenced (e.g., at the end of the process).
+     */
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = 
       boost::make_shared<stdair::STDAIR_Service> (iLogParams);
-    assert (lSTDAIR_Service_ptr != NULL);
-
-    // Store the STDAIR service object within the (AIRRAC) service context
-    lAIRRAC_ServiceContext.setSTDAIR_Service (lSTDAIR_Service_ptr);
+    
+    return lSTDAIR_Service_ptr;
   }
   
   // ////////////////////////////////////////////////////////////////////
   void AIRRAC_Service::
-  init (const stdair::Filename_T& iYieldInputFilename) {
+  addStdAirService (stdair::STDAIR_ServicePtr_T ioSTDAIR_Service_ptr) {
+
+    // Retrieve the Airrac service context
+    assert (_airracServiceContext != NULL);
+    AIRRAC_ServiceContext& lAIRRAC_ServiceContext = *_airracServiceContext;
+
+    // Store the STDAIR service object within the (AIRRAC) service context
+    lAIRRAC_ServiceContext.setSTDAIR_Service (ioSTDAIR_Service_ptr);
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
+  void AIRRAC_Service::initAirracService() {
+    // Do nothing at this stage. A sample BOM tree may be built by
+    // calling the buildSampleBom() method
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
+  void AIRRAC_Service::
+  initAirracService  (const stdair::Filename_T& iYieldInputFilename) {
 
     // Check that the file path given as input corresponds to an actual file
     const bool doesExistAndIsReadable =
@@ -170,7 +208,7 @@ namespace AIRRAC {
 
     // Retrieve the StdAir service context
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
-      lAIRRAC_ServiceContext.getSTDAIR_Service();
+      lAIRRAC_ServiceContext.getSTDAIR_ServicePtr();
     assert (lSTDAIR_Service_ptr != NULL);
     
     // Get the root of the BOM tree, on which all of the other BOM objects
@@ -179,7 +217,13 @@ namespace AIRRAC {
 
     // Initialise the yield parser
     YieldParser::generateYieldStore  (iYieldInputFilename, lBomRoot);
-  } 
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void AIRRAC_Service::
+  buildSampleBom () {
+    
+  }
 
   // ////////////////////////////////////////////////////////////////////
   void AIRRAC_Service::
@@ -192,7 +236,7 @@ namespace AIRRAC {
 
     // Retrieve the StdAir service context
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
-      lAIRRAC_ServiceContext.getSTDAIR_Service();
+      lAIRRAC_ServiceContext.getSTDAIR_ServicePtr();
     assert (lSTDAIR_Service_ptr != NULL);
     
     // Get the root of the BOM tree, on which all of the other BOM objects

@@ -13,29 +13,35 @@
 
 // Forward declarations.
 namespace stdair {
-  class STDAIR_Service;
-  struct BookingRequestStruct;
   struct BasLogParams;
   struct BasDBParams;
-  struct BookingRequestStruct;
 }
 
 namespace AIRRAC {
 
-  // Forward declaration
+  /// Forward declaration
   class AIRRAC_ServiceContext;
 
-  
-  /** Interface for the AIRRAC Services. */
-  class AIRRAC_Service {
+  /**
+   * @brief Interface for the AIRRAC Services.
+   */
+  class AIRRAC_Service {  
   public:
-    // /////////// Business Methods /////////////
-    /** Calculate/retrieve a yield. */
-    void calculateYields (stdair::TravelSolutionList_T&);
-    // /////////// Business Methods /////////////    
-   
-  public:
-    // ////////////////// Constructors and Destructors //////////////////    
+    // ////////////////// Constructors and Destructors //////////////////
+
+    /**
+     * Constructor.
+     *
+     * The initAirracService() method is called; see the corresponding
+     * documentation for more details.
+     *
+     * A reference on an output stream is given, so that log outputs
+     * can be directed onto that stream.
+     *
+     * @param const stdair::BasLogParams& Parameters for the output log stream.
+     */
+    AIRRAC_Service (const stdair::BasLogParams&);
+    
     /** Constructor.
         <br>The init() method is called; see the corresponding documentation
         for more details.
@@ -77,42 +83,109 @@ namespace AIRRAC {
     /** Destructor. */
     ~AIRRAC_Service();
 
+  public:
+    // /////////// Business Methods /////////////
+    /**
+     * Calculate/retrieve a yield.
+     */
+    void calculateYields (stdair::TravelSolutionList_T&);
+
+    void buildSampleBom ();
+
+  public:
+    // //////////////// Display support methods /////////////////
+    /**
+     * Recursively display (dump in the returned string) the objects
+     * of the BOM tree.
+     *
+     * @return std::string Output string in which the BOM tree is
+     *        logged/dumped.
+     */
+    std::string csvDisplay() const;
 
   private:
     // /////// Construction and Destruction helper methods ///////
-    /** Default constructor. */
+    /**
+     * Default constructor.
+     */
     AIRRAC_Service ();
-    /** Default copy constructor. */
+    /**
+     * Copy constructor.
+     */
     AIRRAC_Service (const AIRRAC_Service&);
 
-    /** Initialise the (AIRRAC) service context (i.e., the
-        AIRRAC_ServiceContext object). */
+    /**
+     * Initialise the (AIRRAC) service context (i.e., the
+     * AIRRAC_ServiceContext object).
+     */
     void initServiceContext ();
 
-    /** Initialise the STDAIR service (including the log service).
-        <br>A reference on the root of the BOM tree, namely the BomRoot object,
-        is stored within the service context for later use.
-        @param const stdair::BasLogParams& Parameters for the output log stream.
-        @param const stdair::BasDBParams& Parameters for the database access. */
-    void initStdAirService (const stdair::BasLogParams&,
-                            const stdair::BasDBParams&);
+    /**
+     * Initialise the STDAIR service (including the log service).
+     *
+     * A reference on the root of the BOM tree, namely the BomRoot object,
+     * is stored within the service context for later use.
+     *
+     * @param const stdair::BasLogParams& Parameters for the output log stream.
+     * @param const stdair::BasDBParams& Parameters for the database access.
+     */
+    stdair::STDAIR_ServicePtr_T initStdAirService (const stdair::BasLogParams&,
+                                                   const stdair::BasDBParams&);
     
-    /** Initialise the STDAIR service (including the log service).
-        <br>A reference on the root of the BOM tree, namely the BomRoot object,
-        is stored within the service context for later use.
-        @param const stdair::BasLogParams& Parameters for the output log
-               stream. */
-    void initStdAirService (const stdair::BasLogParams&);
-    
-    /** Initialise.
-        <br>The CSV file, describing the airline yields for the
-        simulator, is parsed and the inventories are generated accordingly.
-        @param const stdair::Filename_T& Filename of the input yield file. */
-    void init (const stdair::Filename_T& iYieldInputFilename); 
+    /**
+     * Initialise the STDAIR service (including the log service).
+     *
+     * A reference on the root of the BOM tree, namely the BomRoot object,
+     * is stored within the service context for later use.
+     *
+     * @param const stdair::BasLogParams& Parameters for the output log stream.
+     */
+    stdair::STDAIR_ServicePtr_T initStdAirService (const stdair::BasLogParams&);
 
-    /** Finalise. */
+    /**
+     * Attach the STDAIR service (holding the log and database services) to
+     * the AIRRAC_Service.
+     *
+     * @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.
+     */
+    void addStdAirService (stdair::STDAIR_ServicePtr_T);
+    
+    /**
+     * Initialise.
+     *
+     * Nothing is being done at that stage. The buildSampleBom() method may
+     * be called later.
+     */
+    void initAirracService();
+
+    /**
+     * Initialise.
+     *
+     * <ol>
+     *  <li>Firstly, the buildSampleBom() method is called, for AIRRAC and with
+     *      the given cabin capacity, in order to build a sample BOM
+     *      tree.
+     *  </li>
+     *  <li>Secondly, the filename of a CSV file is given as parameter.
+     *      That file describes the problem to be optimised, i.e.:
+     *      <ul>
+     *        <li>the demand specifications for all the booking classes
+     *            (mean and standard deviations for the demand distribution);
+     *        </li>the yields corresponding to those booking classes.
+     *      </ul>
+     *      That CSV file is parsed and instantiated in memory accordingly.
+     *      The capacity is that given above.
+     *  </li>
+     * </ol>
+     *
+     * @param const stdair::Filename_T& Filename of the input demand file.
+     */
+    void initAirracService (const stdair::Filename_T& iYieldInputFilename);
+
+    /**
+     * Finalise.
+     */
     void finalise ();
-
     
   private:
     // ///////// Service Context /////////
