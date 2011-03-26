@@ -13,8 +13,8 @@
 #include <boost/program_options.hpp>
 // StdAir
 #include <stdair/STDAIR_Service.hpp>
+#include <stdair/bom/TravelSolutionStruct.hpp>
 #include <stdair/service/Logger.hpp>
-#include <stdair/command/CmdBomManager.hpp>
 // Airrac
 #include <airrac/AIRRAC_Service.hpp>
 #include <airrac/config/airrac-paths.hpp>
@@ -28,15 +28,12 @@ typedef std::vector<std::string> WordList_T;
 const std::string K_AIRRAC_DEFAULT_LOG_FILENAME ("airrac.log");
 
 /** Default name and location for the (CSV) input file. */
-const std::string K_AIRRAC_DEFAULT_YIELD_INPUT_FILENAME (STDAIR_SAMPLE_DIR "/yieldstore01.csv");
+const std::string K_AIRRAC_DEFAULT_YIELD_INPUT_FILENAME (STDAIR_SAMPLE_DIR
+                                                         "/yieldstore01.csv");
 
 /** Default for the input type. It can be either built-in or provided by an
     input file. That latter must then be given with the -i option. */
 const bool K_AIRRAC_DEFAULT_BUILT_IN_INPUT = false;
-
-/** Default for the input type. The BOM tree can be built from either an
-    yield dump or from a yield file. */
-const bool K_AIRRAC_DEFAULT_FOR_YIELD = false;
 
 /** Early return status (so that it can be differentiated from an error). */
 const int K_AIRRAC_EARLY_RETURN_STATUS = 99;
@@ -50,16 +47,12 @@ template<class T> std::ostream& operator<< (std::ostream& os,
 }
 
 /** Read and parse the command line options. */
-int readConfiguration (int argc, char* argv[],
-                       bool& ioIsBuiltin, bool& ioIsForYield,
+int readConfiguration (int argc, char* argv[], bool& ioIsBuiltin,
                        stdair::Filename_T& ioYieldInputFilename,
                        std::string& ioLogFilename) {
 
   // Default for the built-in input
   ioIsBuiltin = K_AIRRAC_DEFAULT_BUILT_IN_INPUT;
-
-  // Default for the yield option
-  ioIsForYield = K_AIRRAC_DEFAULT_FOR_YIELD;
 
   // Declare a group of options that will be allowed only on command line
   boost::program_options::options_description generic ("Generic options");
@@ -74,8 +67,6 @@ int readConfiguration (int argc, char* argv[],
   config.add_options()
     ("builtin,b",
      "The sample BOM tree can be either built-in or parsed from an input file. That latter must then be given with the -y/--yield option")
-    ("for_schedule,f",
-     "The BOM tree should be built from a yield file (instead of from a yield dump)")
     ("yield,y",
      boost::program_options::value< std::string >(&ioYieldInputFilename)->default_value(K_AIRRAC_DEFAULT_YIELD_INPUT_FILENAME),
      "(CVS) input file for the schedule")
@@ -133,42 +124,19 @@ int readConfiguration (int argc, char* argv[],
   const std::string isBuiltinStr = (ioIsBuiltin == true)?"yes":"no";
   std::cout << "The BOM should be built-in? " << isBuiltinStr << std::endl;
 
-  if (vm.count ("for_yield")) {
-    ioIsForYield = true;
-  }
-  const std::string isForYieldStr = (ioIsForYield == true)?"yes":"no";
-  std::cout << "The BOM should be built from yield? " << isForYieldStr
-            << std::endl;
-
   if (ioIsBuiltin == false) {
 
-    if (ioIsForYield == false) {
-      // The BOM tree should be built from parsing a yield dump
-      if (vm.count ("yield")) {
-        ioYieldInputFilename = vm["yield"].as< std::string >();
-        std::cout << "Input yield filename is: " << ioYieldInputFilename
-                  << std::endl;
-
-      } else {
-        // The built-in option is not selected. However, no yield dump
-        // file is specified
-        std::cerr << "Either one among the -b/--builtin and -y/--yield "
-                  << "options must be specified" << std::endl;
-      }
+    // The BOM tree should be built from parsing a yield (and O&D) file
+    if (vm.count ("yield")) {
+      ioYieldInputFilename = vm["yield"].as< std::string >();
+      std::cout << "Input yield filename is: " << ioYieldInputFilename
+                << std::endl;
 
     } else {
-      // The BOM tree should be built from parsing a yield (and O&D) file
-      if (vm.count ("yield")) {
-        ioYieldInputFilename = vm["yield"].as< std::string >();
-        std::cout << "Input yield filename is: " << ioYieldInputFilename
-                  << std::endl;
-
-      } else {
-        // The built-in option is not selected. However, no yield file
-        // is specified
-        std::cerr << "Either one among the -b/--builtin and -y/--yield "
-                  << "options must be specified" << std::endl;
-      }
+      // The built-in option is not selected. However, no yield file
+      // is specified
+      std::cerr << "Either one among the -b/--builtin and -y/--yield "
+                << "options must be specified" << std::endl;
     }
   }
 
@@ -184,12 +152,10 @@ int readConfiguration (int argc, char* argv[],
 // /////////////// M A I N /////////////////
 int main (int argc, char* argv[]) {
 
-  // State whether the BOM tree should be built-in or parsed from an
-  // input file
+  // State whether the BOM tree should be built-in or parsed from an input file
   bool isBuiltin;
-  bool isForYield;
     
-  // Yield input file name
+  // Yield input filename
   stdair::Filename_T lYieldInputFilename;
   
   // Output log File
@@ -197,8 +163,7 @@ int main (int argc, char* argv[]) {
     
   // Call the command-line option parser
   const int lOptionParserStatus = 
-    readConfiguration (argc, argv, isBuiltin, isForYield,
-                       lYieldInputFilename, lLogFilename);
+    readConfiguration (argc, argv, isBuiltin, lYieldInputFilename, lLogFilename);
     
   if (lOptionParserStatus == K_AIRRAC_EARLY_RETURN_STATUS) {
     return 0;
@@ -221,14 +186,23 @@ int main (int argc, char* argv[]) {
     AIRRAC::AIRRAC_Service airracService (lLogParams);
     
     // DEBUG
-    STDAIR_LOG_DEBUG ("Welcome to airrac");
+    STDAIR_LOG_DEBUG ("Welcome to AirRAC");
 
-    // Build the sample BOM tree for RMOL
-    //airracService.buildSampleBom();
+    // Build the sample BOM tree (filled with yields) for AirRAC
+    airracService.buildSampleBom();
+
+    // Build a sample list of travel solutions
+    stdair::TravelSolutionList_T lTravelSolutionList;
+    airracService.buildSampleTravelSolutions (lTravelSolutionList);
 
     // DEBUG: Display the whole BOM tree
-    //const std::string& lCSVDump = airracService.csvDisplay();
-    //STDAIR_LOG_DEBUG (lCSVDump);
+    const std::string& lBOMCSVDump = airracService.csvDisplay();
+    STDAIR_LOG_DEBUG ("BOM tree: " << lBOMCSVDump);
+
+    // DEBUG: Display the travel solutions
+    const std::string& lTSCSVDump =
+      airracService.csvDisplay (lTravelSolutionList);
+    STDAIR_LOG_DEBUG (lTSCSVDump);
 
   } else {
     
@@ -236,12 +210,15 @@ int main (int argc, char* argv[]) {
     AIRRAC::AIRRAC_Service airracService (lLogParams, lYieldInputFilename);
 
     // DEBUG
-    STDAIR_LOG_DEBUG ("Welcome to airrac");
+    STDAIR_LOG_DEBUG ("Welcome to AirRAC");
+
+    // Build a sample list of travel solutions
+    stdair::TravelSolutionList_T lTravelSolutionList;
+    airracService.buildSampleTravelSolutions (lTravelSolutionList);
 
     // DEBUG: Display the whole BOM tree
-    //const std::string& lCSVDump = airracService.csvDisplay();
-    //STDAIR_LOG_DEBUG (lCSVDump);
-      
+    const std::string& lBOMCSVDump = airracService.csvDisplay();
+    STDAIR_LOG_DEBUG ("BOM tree: " << lBOMCSVDump);
   }
 
   // Close the Log outputFile

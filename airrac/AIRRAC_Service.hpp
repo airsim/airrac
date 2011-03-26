@@ -42,46 +42,95 @@ namespace AIRRAC {
      */
     AIRRAC_Service (const stdair::BasLogParams&);
     
-    /** Constructor.
-        <br>The init() method is called; see the corresponding documentation
-        for more details.
-        <br>A reference on an output stream is given, so that log
-        outputs can be directed onto that stream.
-        <br>Moreover, database connection parameters are given, so that a
-        session can be created on the corresponding database.
-        @param const stdair::BasLogParams& Parameters for the output log stream.
-        @param const stdair::BasDBParams& Parameters for the database access.
-        @param const stdair::Filename_T& Filename of the input yield file. */
-    AIRRAC_Service (const stdair::BasLogParams&, const stdair::BasDBParams&,
-                    const stdair::Filename_T& iYieldInputFilename);
+    /**
+     * Constructor.
+     *
+     * The initAirracService() method is called; see the corresponding
+     * documentation for more details.
+     *
+     * A reference on an output stream is given, so that log outputs
+     * can be directed onto that stream.
+     *
+     * @param const stdair::BasLogParams& Parameters for the output log stream.
+     * @param const stdair::BasDBParams& Parameters for the database access.
+     */
+    AIRRAC_Service (const stdair::BasLogParams&, const stdair::BasDBParams&);
+    
+    /**
+     * Constructor.
+     *
+     * The initAirracService() method is called; see the corresponding
+     * documentation for more details.
+     *
+     * Moreover, as no reference on any output stream is given,
+     * it is assumed that the StdAir log service has already been
+     * initialised with the proper log output stream by some other
+     * methods in the calling chain (for instance, when the AIRRAC_Service
+     * is itself being initialised by another library service such as
+     * SIMCRS_Service).
+     *
+     * @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.
+     */
+    AIRRAC_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_ServicePtr);
 
-    /** Constructor.
-        <br>The init() method is called; see the corresponding documentation
-        for more details.
-        <br>Moreover, a reference on an output stream is given, so
-        that log outputs can be directed onto that stream.       
-        @param const stdair::BasLogParams& Parameters for the output log stream.
-        @param const stdair::Date_T& Date for the beginning of analysis.
-        @param const stdair::Filename_T& Filename of the input yield file. */
+    /**
+     * Constructor.
+     *
+     * The initAirracService() method is called; see the corresponding
+     * documentation for more details.
+     *
+     * Moreover, a reference on an output stream is given, so that log
+     * outputs can be directed onto that stream.
+     *
+     * @param const stdair::BasLogParams& Parameters for the output log stream.
+     * @param const stdair::Filename_T& Filename of the input yield file.
+     */
     AIRRAC_Service (const stdair::BasLogParams&,
                     const stdair::Filename_T& iYieldInputFilename);
 
-    /** Constructor.
-        <br>The init() method is called; see the corresponding documentation
-        for more details.
-        <br>Moreover, as no reference on any output stream is given,
-        it is assumed that the StdAir log service has already been
-        initialised with the proper log output stream by some other
-        methods in the calling chain (for instance, when the AIRRAC_Service
-        is itself being initialised by another library service such as
-        SIMCRS_Service).
-        @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.
-        @param const stdair::Filename_T& Filename of the input yield file. */
+    /**
+     * Constructor.
+     *
+     * The initAirracService() method is called; see the corresponding
+     * documentation for more details.
+     *
+     * A reference on an output stream is given, so that log outputs
+     * can be directed onto that stream.
+     *
+     * Moreover, database connection parameters are given, so that a
+     * session can be created on the corresponding database.
+     *
+     * @param const stdair::BasLogParams& Parameters for the output log stream.
+     * @param const stdair::BasDBParams& Parameters for the database access.
+     * @param const stdair::Filename_T& Filename of the input yield file.
+     */
+    AIRRAC_Service (const stdair::BasLogParams&, const stdair::BasDBParams&,
+                    const stdair::Filename_T& iYieldInputFilename);
+
+    /**
+     * Constructor.
+     *
+     * The initAirracService() method is called; see the corresponding
+     * documentation for more details.
+     *
+     * Moreover, as no reference on any output stream is given,
+     * it is assumed that the StdAir log service has already been
+     * initialised with the proper log output stream by some other
+     * methods in the calling chain (for instance, when the AIRRAC_Service
+     * is itself being initialised by another library service such as
+     * SIMCRS_Service).
+     *
+     * @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.
+     * @param const stdair::Filename_T& Filename of the input yield file.
+     */
     AIRRAC_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_ServicePtr,
                     const stdair::Filename_T& iYieldInputFilename);
 
-    /** Destructor. */
+    /**
+     * Destructor.
+     */
     ~AIRRAC_Service();
+
 
   public:
     // /////////// Business Methods /////////////
@@ -90,7 +139,33 @@ namespace AIRRAC {
      */
     void calculateYields (stdair::TravelSolutionList_T&);
 
-    void buildSampleBom ();
+    /**
+     * Build a sample BOM tree.
+     *
+     * For now, no object is created: the BOM tree remains empty. In
+     * the future, it will hold a sample yield store.
+     */
+    void buildSampleBom();
+
+    /**
+     * Build a sample list of travel solutions.
+     *
+     * As of now (March 2011), that list is made of the following
+     * travel solutions:
+     * <ul>
+     *  <li>BA9</li>
+     *  <li>LHR-SYD</li>
+     *  <li>2011-06-10</li>
+     *  <li>Q</li>
+     *  <li>WTP: 900</li>
+     *  <li>Change fee: 20; Non refundable; Saturday night stay</li>
+     * </ul>
+     *
+     * @param TravelSolutionList_T& Sample list of travel solution structures.
+     *        It should be given empty. It is altered with the returned sample.
+     */
+    void buildSampleTravelSolutions (stdair::TravelSolutionList_T&);
+
 
   public:
     // //////////////// Display support methods /////////////////
@@ -103,12 +178,23 @@ namespace AIRRAC {
      */
     std::string csvDisplay() const;
 
+    /**
+     * Display (dump in the returned string) the full list of travel
+     * solution structures.
+     *
+     * @return std::string Output string in which the list of travel
+     *        solutions is logged/dumped.
+     */
+    std::string csvDisplay (const stdair::TravelSolutionList_T&) const;
+
+
   private:
     // /////// Construction and Destruction helper methods ///////
     /**
      * Default constructor.
      */
-    AIRRAC_Service ();
+    AIRRAC_Service();
+
     /**
      * Copy constructor.
      */
@@ -118,7 +204,7 @@ namespace AIRRAC {
      * Initialise the (AIRRAC) service context (i.e., the
      * AIRRAC_ServiceContext object).
      */
-    void initServiceContext ();
+    void initServiceContext();
 
     /**
      * Initialise the STDAIR service (including the log service).
@@ -147,8 +233,11 @@ namespace AIRRAC {
      * the AIRRAC_Service.
      *
      * @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.
+     * @param const bool State whether or not AirRAC owns the STDAIR service
+     *        resources.
      */
-    void addStdAirService (stdair::STDAIR_ServicePtr_T);
+    void addStdAirService (stdair::STDAIR_ServicePtr_T,
+                           const bool iOwnStdairService);
     
     /**
      * Initialise.
@@ -161,35 +250,24 @@ namespace AIRRAC {
     /**
      * Initialise.
      *
-     * <ol>
-     *  <li>Firstly, the buildSampleBom() method is called, for AIRRAC and with
-     *      the given cabin capacity, in order to build a sample BOM
-     *      tree.
-     *  </li>
-     *  <li>Secondly, the filename of a CSV file is given as parameter.
-     *      That file describes the problem to be optimised, i.e.:
-     *      <ul>
-     *        <li>the demand specifications for all the booking classes
-     *            (mean and standard deviations for the demand distribution);
-     *        </li>the yields corresponding to those booking classes.
-     *      </ul>
-     *      That CSV file is parsed and instantiated in memory accordingly.
-     *      The capacity is that given above.
-     *  </li>
-     * </ol>
+     * The CSV file, describing the airline yield data store, is parsed
+     * and instantiated in memory accordingly.
      *
-     * @param const stdair::Filename_T& Filename of the input demand file.
+     * @param const stdair::Filename_T& Filename of the input yield file.
      */
     void initAirracService (const stdair::Filename_T& iYieldInputFilename);
 
     /**
      * Finalise.
      */
-    void finalise ();
+    void finalise();
     
+
   private:
     // ///////// Service Context /////////
-    /** AirRAC context. */
+    /**
+     * AirRAC service context.
+     */
     AIRRAC_ServiceContext* _airracServiceContext;
   };
 }

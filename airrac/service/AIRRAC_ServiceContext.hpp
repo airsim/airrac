@@ -48,14 +48,25 @@ namespace AIRRAC {
       return *_stdairService;
     }
     
+    /**
+     * State whether or not RMOL owns the STDAIR service resources.
+     */
+    const bool getOwnStdairServiceFlag() const {
+      return _ownStdairService;
+    }
+
+
   private:   
     // ///////////////// Setters ///////////////////
     /**
      * Set the pointer on the STDAIR service handler.
      */
-    void setSTDAIR_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_ServicePtr) {
+    void setSTDAIR_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_ServicePtr,
+                            const bool iOwnStdairService) {
       _stdairService = ioSTDAIR_ServicePtr;
+      _ownStdairService = iOwnStdairService;
     }
+
 
   private:
     // ///////// Display Methods //////////
@@ -69,21 +80,34 @@ namespace AIRRAC {
      */
     const std::string display() const;
     
+    /**
+     * Display of the structure.
+     */
+    const std::string describe() const;
+
+
   private:
     // /////// Construction / initialisation ////////
     /**
-     * Constructor.
+     * Default constructor.
      */
-    AIRRAC_ServiceContext ();
-    AIRRAC_ServiceContext (const YieldID_T&);
+    AIRRAC_ServiceContext();
+
     /**
      * Copy constructor.
      */
     AIRRAC_ServiceContext (const AIRRAC_ServiceContext&);
+
     /**
      * Destructor.
      */
     ~AIRRAC_ServiceContext();
+
+    /**
+     * Clear the context.
+     */
+    void reset();
+
 
   private:
     // //////////// Attributes //////////////////
@@ -91,6 +115,11 @@ namespace AIRRAC {
      * Standard Airline (StdAir) Service Handler.
      */
     stdair::STDAIR_ServicePtr_T _stdairService;
+
+    /**
+     * State whether or not RMOL owns the STDAIR service resources.
+     */
+    bool _ownStdairService;
   };
 
 }
