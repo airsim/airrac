@@ -268,7 +268,7 @@ namespace AIRRAC {
       lAIRRAC_ServiceContext.getSTDAIR_Service();
 
     // Delegate the BOM building to the dedicated service
-    //lSTDAIR_Service.buildYieldSampleBom();
+    lSTDAIR_Service.buildSampleBomForAirRAC();
   }
 
   // //////////////////////////////////////////////////////////////////////
