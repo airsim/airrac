@@ -66,6 +66,12 @@ namespace AIRRAC {
   };
 
   // //////// Type definitions specific to AirRAC /////////
+  /**
+   * Pointer on the AIRRAC Service handler.
+   */
+  typedef boost::shared_ptr<AIRRAC_Service> AIRRAC_ServicePtr_T;
+
+
   /** ID for the Fare Quote system. */
   typedef unsigned int YieldID_T;
 }
