@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE (airrac_simple_yield) {
     
   // Input file name
   const stdair::Filename_T lYieldInputFilename (STDAIR_SAMPLE_DIR
-                                                "/invdump01.csv");
+                                                "/yieldstore01.csv");
 
   // Check that the file path given as input corresponds to an actual file
   bool doesExistAndIsReadable =
