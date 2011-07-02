@@ -50,6 +50,7 @@ esac
 
 # Checks for programs
 save_CXXFLAGS="$CXXFLAGS"
+AC_LANG_SOURCE(C++)
 AC_PROG_CXX
 AC_PROG_CXXCPP
 CXXFLAGS="$save_CXXFLAGS"
