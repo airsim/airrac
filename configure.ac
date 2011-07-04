@@ -48,9 +48,12 @@ case $host in
     ;;
 esac
 
+# Set default language to C++
+AC_LANG([C++])
+AC_LANG_CPLUSPLUS
+
 # Checks for programs
 save_CXXFLAGS="$CXXFLAGS"
-AC_LANG_SOURCE(C++)
 AC_PROG_CXX
 AC_PROG_CXXCPP
 CXXFLAGS="$save_CXXFLAGS"
@@ -58,9 +61,6 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-
-# Set default language to C++
-AC_LANG([C++])
 
 # Check for exceptions switch
 AC_ARG_ENABLE(exceptions,
@@ -236,6 +236,7 @@ AC_CONFIG_FILES(
 	airrac/command/Makefile
 	airrac/service/Makefile
 	airrac/config/Makefile
+	airrac/config/airrac-paths.hpp
 	airrac/core/Makefile
 	airrac/batches/Makefile
 	samples/Makefile
