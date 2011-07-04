@@ -1,5 +1,5 @@
 #
-# TraDemGen Tests
+# AirRAC Tests
 #
 if (Boost_FOUND)
 
@@ -8,12 +8,12 @@ if (Boost_FOUND)
 
   enable_testing() 
 
-  # * TraDemGen Test Suite
-  #file (GLOB trademgentest_SOURCES *.cpp)
-  set (TEST_TARGET TrademgenTest)
-  set (trademgentest_SOURCES DemandGenerationTestSuite.cpp)
-  add_test_suite (${TEST_TARGET} "${trademgentest_SOURCES}"
-    ${TRADEMGEN_LIB_TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+  # * AirRAC Test Suite
+  #file (GLOB airractest_SOURCES *.cpp)
+  set (TEST_TARGET AirracTest)
+  set (airractest_SOURCES YieldTestSuite.cpp)
+  add_test_suite (${TEST_TARGET} "${airractest_SOURCES}"
+    ${AIRRAC_LIB_TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
   # * Next test suite
   # ...
