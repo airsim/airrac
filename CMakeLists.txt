@@ -8,7 +8,7 @@ cmake_minimum_required (VERSION 2.6)
 ##
 # Project info
 project (airrac)
-set (PACKAGE_PRETTY_NAME "AirRAC" CACHE INTERNAL "Description")
+set (PACKAGE_PRETTY_NAME "AIRRAC" CACHE INTERNAL "Description")
 string (TOLOWER "${PROJECT_NAME}" PACKAGE_TMP)
 set (PACKAGE "${PACKAGE_TMP}" CACHE INTERNAL "Description")
 string (TOUPPER "${PROJECT_NAME}" PACKAGE_NAME_TMP)
@@ -60,14 +60,6 @@ foreach (p LIB BIN INCLUDE DATA)
 endforeach()
 
 ##
-# Library target. It is specified here because both the airrac/config (for
-# the library target) and airrac/batches (for the binary target)
-# sub-directories need it.
-set (AIRRAC_LIB_TARGET ${PROJECT_NAME}lib)
-# Library names
-set (AIRRAC_LIB_NAME ${PROJECT_NAME})
-
-##
 # SCM (Git)
 find_package (Git)
 if (Git_FOUND)
@@ -86,7 +78,7 @@ install (FILES ${OTHERDOC_FILES} DESTINATION ${OTHERDOC_PATH})
 include (InstallRequiredSystemLibraries)
 set (CPACK_PACKAGE_NAME "${PROJECT_NAME}")
 set (CPACK_PACKAGE_DESCRIPTION "C++ Standard Airline IT Library")
-set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} aims at providing a clean API, and the corresponding C++ implementation, for the basis of Airline IT Business Object Model (BOM), that is, to be used by several other open source projects, such as RMOL, Air-Sched, Travel-CCM, OpenTREP, etc.")
+set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} aims at providing a clean API, and the corresponding C++ implementation, for the basis of Airline IT Business Object Model (BOM), that is, to be used by several other open source projects, such as AIRRAC, Air-Sched, Travel-CCM, OpenTREP, etc.")
 
 set (CPACK_PACKAGE_CONTACT "Denis Arnaud <denis_arnaud@users.sourceforge.net>")
 set (CPACK_PACKAGE_VENDOR "Denis Arnaud")
@@ -200,26 +192,38 @@ include (config/devhelpers.cmake)
 # cmake -DCMAKE_BUILD_TYPE:STRING={Debug,Release,MinSizeRel,RelWithDebInfo}
 #set (CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror")
 set (CMAKE_CXX_FLAGS "-Wall -Werror")
-include_directories (BEFORE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}) 
+include_directories (BEFORE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
 ##
-# Subdirs
-add_subdirectory (${PROJECT_NAME})
-add_subdirectory (${PROJECT_NAME}/batches)
+# Export the package for use from the build-tree (this registers the build-tree
+# with a global CMake-registry).
+export (PACKAGE ${PROJECT_NAME})
+
+# Specify the file name basis for the (CMake) export. It will generate a file
+# named ${LIB_DEPENDENCY_EXPORT}.cmake, allowing CMake to link with all the
+# needed dependencies. That variable is needed by each library target
+# (specified by each sub-module/directory).
+set (LIB_DEPENDENCY_EXPORT AirracLibraryDepends)
+
+##
+# Sub-directories
+# Gather all the libraries built so far into a special target, namely
+# EXTRA_LIBS, which the test binaries, below, need.
+# Note that each LOCAL_LIB_TARGET library, for a given module, depends on all
+# the predessors of that module. For instance, the airraclib depends upon the
+# airraclib library.
+set (EMBEDDED_COMPONENTS ${PROJECT_NAME})
+foreach (EMBEDDED_COMPONENT ${EMBEDDED_COMPONENTS})
+  set (LOCAL_LIB_TARGET ${EMBEDDED_COMPONENT}lib)
+  add_subdirectory (${EMBEDDED_COMPONENT})
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${LOCAL_LIB_TARGET})
+endforeach (EMBEDDED_COMPONENT)
+
+##
+# Tests
+# The "PROJECT_LIB_TARGET" variable is needed by the test binary target.
+set (PROJECT_LIB_TARGET ${PROJECT_NAME}lib)
 add_subdirectory (test)
-
-# Add all targets to the build-tree export set
-export (TARGETS ${PROJECT_NAME}
-  ${AIRRAC_LIB_TARGET} ${AIRRAC_UICL_LIB_TARGET}
-  FILE "${PROJECT_BINARY_DIR}/AirracLibraryDepends.cmake")
-
-# Export the package for use from the build-tree
-# (this registers the build-tree with a global CMake-registry)
-export (PACKAGE airrac)
-
-# Install the export set for use with the install-tree
-install (EXPORT AirracLibraryDepends DESTINATION
-  "${INSTALL_DATA_DIR}/${PACKAGE}/CMake" COMPONENT dev)
 
 # Create a AirracConfig.cmake file for the use from the install tree
 # and install it
@@ -247,10 +251,12 @@ add_custom_target (dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 # Display status message for important variables
 message (STATUS)
 message (STATUS "=============================================================")
-message (STATUS "BUILD_SHARED_LIBS = ${BUILD_SHARED_LIBS}" )
-message (STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}" )
-message (STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}" )
-message (STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}" )
+message (STATUS "BUILD_SHARED_LIBS = ${BUILD_SHARED_LIBS}")
+message (STATUS "Embedded components = ${EMBEDDED_COMPONENTS}")
+message (STATUS "EXTRA_LIBS = ${EXTRA_LIBS}")
+message (STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
+message (STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
+message (STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 message (STATUS)
 message (STATUS "---")
 message (STATUS "INSTALL_LIB_DIR = ${INSTALL_LIB_DIR}")
