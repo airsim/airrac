@@ -26,14 +26,14 @@ packaging_set_description ("C++ library for simulating a Revenue Accounting syst
 packaging_set_summary ("${PROJECT_NAME} is a C++ library of airline revenue accounting classes and
 functions, mainly targeting simulation purposes.
 
-%{name} makes an extensive use of existing open-source libraries for
+${PROJECT_NAME} makes an extensive use of existing open-source libraries for
 increased functionality, speed and accuracy. In particular the
 Boost (C++ Standard Extensions: http://www.boost.org) library is used")
 packaging_set_contact ("Denis Arnaud <denis_arnaud - at - users dot sourceforge dot net>")
 packaging_set_vendor ("Denis Arnaud")
 
 #
-packaging_set_other_options ()
+packaging_set_other_options (TBZ2 "TBZ2;TGZ")
 
 
 ########################################
