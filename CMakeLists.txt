@@ -7,7 +7,7 @@ include (config/project_config_embeddable.cmake)
 
 ##
 # Project info
-set_project_names (airrac)
+set_project_names (airrac AirRAC)
 set_project_versions (99 99 99)
 
 ##
