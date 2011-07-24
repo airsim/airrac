@@ -30,7 +30,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure \
 EXTRA_DIST =
 
 # Build in these directories:
-SUBDIRS = airrac samples $(TEST_DIR)
+SUBDIRS = airrac $(TEST_DIR)
 
 
 # Configuration helpers
