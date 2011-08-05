@@ -26,8 +26,8 @@ functions, mainly targeting simulation purposes.
 increased functionality, speed and accuracy. In particular the
 Boost (C++ Standard Extensions: http://www.boost.org) library is used.
 
-Install the %{name} package if you need a library for Airline
-Revenue Accounting C++ fundaments, mainly for simulation purpose.
+Install the %{name} package if you need a library of basic C++ objects
+for Airline Revenue Accounting, mainly for simulation purpose.
 
 %package        devel
 Summary:        Header files, libraries and development documentation for %{name}
