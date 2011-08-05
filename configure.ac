@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (C) 2007-2011 Denis Arnaud <denis_arnaud@users.sourceforge.net>])
-AC_INIT([AIRRAC],[99.99.99],[denis_arnaud@users.sourceforge.net],[airrac])
+AC_INIT([AIRRAC],[0.1.0],[denis_arnaud@users.sourceforge.net],[airrac])
 AC_CONFIG_HEADER([airrac/config.h])
 AC_CONFIG_SRCDIR([airrac/basic/BasConst.cpp])
 AC_CONFIG_AUX_DIR([config])
@@ -16,7 +16,7 @@ PACKAGE_PRETTY_NAME="AirRAC"
 AC_SUBST(PACKAGE_PRETTY_NAME)
 
 # Shared library versioning
-GENERIC_LIBRARY_VERSION="99:99:99"
+GENERIC_LIBRARY_VERSION="0:1:0"
 #                        | | |
 #                 +------+ | +---+
 #                 |        |     |
