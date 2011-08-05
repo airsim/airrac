@@ -1,0 +1,10 @@
+[D]/home/user/dev/sim/airrac/airracgithub/airrac/command/YieldParserHelper.cpp:493: Parsing yield input file: /home/user/dev/deliveries/stdair-0.36.2/share/stdair/samples/yieldstore01.csv
+[D]/home/user/dev/sim/airrac/airracgithub/airrac/command/YieldParserHelper.cpp:326: YieldRule: 1, SIN-BKK (ALL), DC, [2010-Jan-15/2011-Jan-01] - [00:00:00/23:59:00], Y, 200 EUR, SQ / Y
+[D]/home/user/dev/sim/airrac/airracgithub/airrac/command/YieldParserHelper.cpp:326: YieldRule: 2, SIN-HND (ALL), DC, [2010-Jan-15/2011-Jan-01] - [00:00:00/23:59:00], Y, 200 EUR, SQ / Y
+[D]/home/user/dev/sim/airrac/airracgithub/airrac/command/YieldParserHelper.cpp:326: YieldRule: 3, SIN-NCE (ALL), DC, [2010-Jan-15/2011-Jan-01] - [00:00:00/23:59:00], Y, 1200 EUR, SQ / Y - AF / YLMN
+[D]/home/user/dev/sim/airrac/airracgithub/airrac/command/YieldParserHelper.cpp:326: YieldRule: 4, SIN-BKK (ALL), DC, [2010-Jan-15/2011-Jan-01] - [00:00:00/23:59:00], Y, 300 EUR, SQ / Y
+[D]/home/user/dev/sim/airrac/airracgithub/airrac/command/YieldParserHelper.cpp:326: YieldRule: 5, SIN-HND (ALL), DC, [2010-Jan-15/2011-Jan-01] - [00:00:00/23:59:00], Y, 300 EUR, SQ / Y
+[D]/home/user/dev/sim/airrac/airracgithub/airrac/command/YieldParserHelper.cpp:326: YieldRule: 6, SIN-NCE (ALL), DC, [2010-Jan-15/2011-Jan-01] - [00:00:00/23:59:00], Y, 1500 EUR, SQ / Y - AF / YLMN
+[D]/home/user/dev/sim/airrac/airracgithub/airrac/command/YieldParserHelper.cpp:541: Parsing of yield input file: /home/user/dev/deliveries/stdair-0.36.2/share/stdair/samples/yieldstore01.csv succeeded
+[D]/home/user/dev/sim/airrac/airracgithub/airrac/service/AIRRAC_Service.cpp:306: Yield calculation: 4.9e-05 - AIRRAC_ServiceContext -- Owns StdAir service: 1
+

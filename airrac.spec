@@ -5,21 +5,18 @@ Name:           airrac
 Version:        99.99.99
 Release:        1%{?dist}
 
-Summary:        C++ library for simulating a Revenue Accounting system
+Summary:        C++ Simulated Revenue Accounting (RAC) System Library
 
 Group:          System Environment/Libraries 
-License:        LGPLv2
+License:        LGPLv2+
 URL:            http://sourceforge.net/projects/%{name}/
 Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
-%{?el5:BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)}
+BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-BuildRequires:  boost-devel
-BuildRequires:  openmpi-devel
-BuildRequires:  soci-mysql-devel
-# When the extracc package will part of stdair, remove the following line
-# (see https://bugzilla.redhat.com/show_bug.cgi?id=616881 for more details)
-BuildRequires:  extracc-devel
+BuildRequires:  cmake
+BuildRequires:  boost-devel, soci-mysql-devel,
 BuildRequires:  stdair-devel
+
 
 %description
 %{name} is a C++ library of airline revenue accounting classes and
@@ -30,12 +27,12 @@ increased functionality, speed and accuracy. In particular the
 Boost (C++ Standard Extensions: http://www.boost.org) library is used.
 
 Install the %{name} package if you need a library for Airline
-Inventory Management C++ fundaments, mainly for simulation purpose.
+Revenue Accounting C++ fundaments, mainly for simulation purpose.
 
 %package        devel
 Summary:        Header files, libraries and development documentation for %{name}
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
@@ -57,37 +54,31 @@ library. The documentation is the same as at the %{name} web page.
 
 %prep
 %setup -q
-# The INSTALL package is not relevant for RPM package users
-# (e.g., see https://bugzilla.redhat.com/show_bug.cgi?id=489233#c4)
-rm -f INSTALL
 # Fix some permissions and formats
 chmod -x AUTHORS ChangeLog COPYING NEWS README
-find . -type f -name '*.[hc]pp' -exec chmod 644 {} \;
+find . -type f -name '*.[hc]pp' -exec chmod -x {} \;
 
 
 %build
-%configure --disable-static
+%cmake .
 make %{?_smp_mflags}
 
 %install
-# On Fedora, the BuildRoot is automatically cleaned. Which is not the case for
-# RedHat. See: https://fedoraproject.org/wiki/Packaging/Guidelines#BuildRoot_tag
-%{?rhel:rm -rf $RPM_BUILD_ROOT}
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
 
-make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
-
-# Remove unpackaged files from the buildroot
-rm -f $RPM_BUILD_ROOT%{_libdir}/lib%{name}.la
-# When the extracc package will be approved, the following line has to be removed
-rm -f $RPM_BUILD_ROOT%{_libdir}/libextracppunit.la
+# Fix some permissions
+find $RPM_BUILD_ROOT%{_libexecdir}/%{name} -type f -name '*.sh' -exec chmod +x {} \;
 
 mkdir -p %{mydocs}
 mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/html %{mydocs}
+rm -f %{mydocs}/html/installdox
 
-%if 0%{?rhel}
+%check
+ctest
+
 %clean
 rm -rf $RPM_BUILD_ROOT
-%endif
 
 %post -p /sbin/ldconfig
 
@@ -108,6 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib%{name}.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_datadir}/aclocal/%{name}.m4
+%{_datadir}/%{name}/CMake
 %{_mandir}/man1/%{name}-config.1.*
 %{_mandir}/man3/%{name}-library.3.*
 
@@ -118,9 +110,5 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Sep 03 2010 Christophe Lacombe <clacombe@amadeus.com> 99.99.99-1
-- Upstream integration
-
-* Fri Sep 03 2010 Christophe Lacombe <clacombe@amadeus.com> 0.1.0-1
+* Sat Aug 06 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 99.99.99-1
 - First package
-

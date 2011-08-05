@@ -31,17 +31,17 @@ Usage: @PACKAGE@-config [OPTION]
 
 Known values for OPTION are:
 
+  --help          display this help and exit
   --prefix        print @PACKAGE_PRETTY_NAME@ installation prefix
-  --sampledir     print where the (StdAir CSV) sample files are located
+  --version       output version information
   --libs          print library linking information
   --cflags        print pre-processor and compiler flags
+  --sampledir     print where the (StdAir CSV) sample files are located
   --mandir        print where the manual (MAN) pages are located
   --infodir       print where the information (info) pages are located
   --docdir        print where the documentation is located
   --htmldocpath   print where the HTML documentation is located
   --refmanpath    print where the reference manual (PDF) is located
-  --help          display this help and exit
-  --version       output version information
 EOF
   exit $1
 }
