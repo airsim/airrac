@@ -14,7 +14,7 @@ set_project_versions (0 1 0)
 # Project options
 # The parameters are:
 #  * whether or not the documentation must be built and installed
-set_project_options (off)
+set_project_options (on)
 
 
 #####################################
