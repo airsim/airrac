@@ -1,7 +1,7 @@
 /*!
 
 \page airrac-config
-	Configuration Script for the $projectbrief
+	Configuration Script for the C++ Simulated Revenue Accounting (RAC) System Library
 
 \section sec_synopsis SYNOPSIS
 <b>airrac-config</b> <tt>[--prefix] [--version] [--libs] [--cflags]</tt>
