@@ -3,7 +3,7 @@
 
 \section toc Table of Contents
 - \ref intro
-- \ref airrac_0.1
+- \ref airrac_0_1
   - \ref linux
     - \ref fedora_atlas
     - \ref gentoo_acml
@@ -44,7 +44,7 @@ If you manage to compile, install and test the AirRAC library on a system not
 mentioned below, please let us know, so we could update this database.
 
 
-\section airrac_0.1 AirRAC 0.1.x
+\section airrac_0_1 AirRAC 0.1.x
 
 \subsection linux Linux Systems
 
