@@ -23,7 +23,6 @@ set_project_options (on)
 #####################################
 #
 packaging_init (${PROJECT_NAME})
-packaging_set_description ("C++ library for simulating a Revenue Accounting system")
 packaging_set_summary ("${PROJECT_NAME} is a C++ library of airline revenue accounting classes and
 functions, mainly targeting simulation purposes.
 
