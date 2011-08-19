@@ -13,8 +13,8 @@ URL:            http://sourceforge.net/projects/%{name}/
 Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-BuildRequires:  cmake
-BuildRequires:  boost-devel, soci-mysql-devel,
+BuildRequires:  cmake, python-devel
+BuildRequires:  boost-devel, soci-mysql-devel, zeromq-devel
 BuildRequires:  stdair-devel
 
 
@@ -96,6 +96,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib%{name}.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_datadir}/aclocal/%{name}.m4
+%dir %{_datadir}/%{name}
 %{_datadir}/%{name}/CMake
 %{_mandir}/man1/%{name}-config.1.*
 %{_mandir}/man3/%{name}-library.3.*
@@ -109,6 +110,9 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sat Aug 06 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 99.99.99-1
 - Upstream integration
+
+* Fri Aug 19 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.0-2
+- Took into account the feedback from the package review (#728649)
 
 * Fri Aug 05 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.0-1
 - First package
