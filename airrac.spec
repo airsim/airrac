@@ -2,7 +2,7 @@
 %global mydocs __tmp_docdir
 #
 Name:           airrac
-Version:        0.1.1
+Version:        0.1.2
 Release:        1%{?dist}
 
 Summary:        C++ Simulated Revenue Accounting (RAC) System Library
@@ -107,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 30 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.2-1
+- Upstream update
+
 * Sat Aug 20 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.1-1
 - Removed the need for Graphviz: the class diagrams are no longer
   built with it
