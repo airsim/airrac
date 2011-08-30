@@ -110,6 +110,13 @@ rm -rf $RPM_BUILD_ROOT
 * Sat Aug 06 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 99.99.99-1
 - Upstream integration
 
+* Tue Aug 30 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.2-1
+- Upstream update
+
+* Sat Aug 20 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.1-1
+- Removed the need for Graphviz: the class diagrams are no longer
+  built with it
+
 * Fri Aug 19 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.0-2
 - Took into account the feedback from the package review (#728649)
 
