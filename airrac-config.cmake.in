@@ -1,6 +1,6 @@
 #
 # Config file for the AirRAC package. It defines the following variables:
-#  AIRRAC_VERSION      - version of StdAir
+#  AIRRAC_VERSION      - version of AirRAC
 #  AIRRAC_BINARY_DIRS  - binary directories for AirRAC
 #  AIRRAC_INCLUDE_DIRS - include directories for AirRAC
 #  AIRRAC_LIBRARY_DIRS - library directories for AirRAC (normally not used!)
