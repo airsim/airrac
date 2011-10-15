@@ -30,33 +30,32 @@ Install the %{name} package if you need a library of basic C++ objects
 for Airline Revenue Accounting, mainly for simulation purpose.
 
 %package        devel
-Summary:        Header files, libraries and development documentation for %{name}
+Summary:        Header files, libraries and development helper tools for %{name}
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       pkgconfig
 
 %description    devel
-This package contains the header files, static libraries and
-development documentation for %{name}. If you would like to develop
+This package contains the header files, shared libraries and
+development helper tools for %{name}. If you would like to develop
 programs using %{name}, you will need to install %{name}-devel.
 
-%package doc
+%package        doc
 Summary:        HTML documentation for the %{name} library
 Group:          Documentation
 %{?fedora:BuildArch:      noarch}
 BuildRequires:  tex(latex)
 BuildRequires:  doxygen, ghostscript
 
-%description doc
-This package contains the documentation in the HTML format of the %{name}
-library. The documentation is the same as at the %{name} web page.
+%description    doc
+This package contains HTML pages, as well as a PDF reference manual,
+for %{name}. All that documentation is generated thanks to Doxygen
+(http://doxygen.org). The content is the same as what can be browsed
+online (http://%{name}.org).
 
 
 %prep
 %setup -q
-# Fix some permissions and formats
-chmod -x AUTHORS ChangeLog COPYING NEWS README
-find . -type f -name '*.[hc]pp' -exec chmod -x {} \;
 
 
 %build
@@ -86,7 +85,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING NEWS README
 %{_bindir}/%{name}
-%{_libdir}/lib*.so.*
+%{_libdir}/lib%{name}.so.*
 %{_mandir}/man1/%{name}.1.*
 
 %files devel
@@ -108,8 +107,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat Aug 20 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.2.0-1
+* Sat Oct 15 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.2.0-1
 - Upstream update
+
+* Tue Aug 30 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.2-1
+- Upstream update
+
+* Sat Aug 20 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.1-1
+- Removed the need for Graphviz: the class diagrams are no longer
+  built with it
 
 * Fri Aug 19 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.0-2
 - Took into account the feedback from the package review (#728649)
