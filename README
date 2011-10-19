@@ -49,7 +49,7 @@ http://sourceforge.net/project/showfiles.php?group_id=317250
 Then, as usual:
 * To configure the project, type something like:
   mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/airrac-0.2.0 \
+  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/airrac-0.2.1 \
    -DWITH_STDAIR_PREFIX=/home/user/dev/deliveries/stdair-stable \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON ..
 * To build the project, type:
