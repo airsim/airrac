@@ -1,8 +1,0 @@
-
-	* Tue Aug 30 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.1.2
-	- Minor improvement in the sample BOM tree initialisation.
-
-	* Fri Aug 05 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.1.0
-	- First release. The yields are parsed either from a CSV file or
-	from a built-in sample BOM tree. Then, AirRAC retrieves yields
-	corresponding to given travel solution structures.
