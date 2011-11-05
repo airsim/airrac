@@ -1,7 +1,12 @@
+* 2011-11-05:
+- Version 0.2.2
+- Improved the CMake build framework, e.g.,
+  with regards to SOCI.
+
 * 2011-10-19:
 - Version 0.2.1
-- The build framework is now compatible with CMake 2.6 (the exclusive
-  dependency on CMake 2.8 has been removed).
+- The build framework is now compatible with CMake 2.6
+  (the exclusive dependency on CMake 2.8 has been removed).
 
 * 2011-10-15:
 - Version 0.2.0
@@ -13,6 +18,8 @@
 
 * 2011-08-06:
 - Version 0.1.0
-- First release. The yields are parsed either from a CSV file or from a
-  built-in sample BOM tree. Then, AirRAC retrieves yields corresponding
-  to given travel solution structures.
+- First release. The yields are parsed either from a 
+  CSV file or from a built-in sample BOM tree. Then,
+  AirRAC retrieves yields corresponding to given
+  travel solution structures.
+

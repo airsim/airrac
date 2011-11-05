@@ -49,7 +49,7 @@ http://sourceforge.net/project/showfiles.php?group_id=317250
 Then, as usual:
 * To configure the project, type something like:
   mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/airrac-0.2.1 \
+  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/airrac-0.2.2 \
    -DWITH_STDAIR_PREFIX=/home/user/dev/deliveries/stdair-stable \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON ..
 * To build the project, type:
@@ -58,9 +58,13 @@ Then, as usual:
   make check
 * To install the library (libairrac*.so*) and the binary (airrac),
   make install
+  cd /home/user/dev/deliveries
+  rm -f airrac-stable && ln -s airrac-0.2.2 airrac-stable
+  cd -
 * To package the source files, type:
   make dist
 * To package the binary and the (HTML and PDF) documentation:
   make package
 
-Denis Arnaud (August 2011)
+Denis Arnaud (November 2011)
+

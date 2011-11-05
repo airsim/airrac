@@ -1,3 +1,7 @@
+
+	* Sat Nov 05 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.2.2
+	- Improved the CMake build framework, e.g., with regards to SOCI.
+
 	* Wed Oct 19 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.2.1
 	- The build framework is now compatible with CMake 2.6 (the exclusive
 	dependency on CMake 2.8 has been removed).
@@ -12,3 +16,4 @@
 	- First release. The yields are parsed either from a CSV file or
 	from a built-in sample BOM tree. Then, AirRAC retrieves yields
 	corresponding to given travel solution structures.
+
