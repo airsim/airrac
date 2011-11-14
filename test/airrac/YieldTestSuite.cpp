@@ -46,6 +46,58 @@ struct UnitTestConfig {
   }
 };
 
+// //////////////////////////////////////////////////////////////////////
+
+/**
+ * Build and search yields for a default list of travel solutions
+ */
+void testYieldQuoterHelper (const unsigned short iTestFlag,
+                            const stdair::Filename_T iYieldInputFilename,
+                            const bool isBuiltin) {
+
+  // Output log File
+  std::ostringstream oStr;
+  oStr << "FQTTestSuite_" << iTestFlag << ".log";
+  const stdair::Filename_T lLogFilename (oStr.str());
+
+  // Set the log parameters
+  std::ofstream logOutputFile;
+  // Open and clean the log outputfile
+  logOutputFile.open (lLogFilename.c_str());
+  logOutputFile.clear();
+    
+  // Initialise the AirRAC service object
+  const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG,
+                                         logOutputFile);
+  
+  // Initialise the AirRAC service object
+  AIRRAC::AIRRAC_Service airracService (lLogParams);
+  
+  // Build a sample list of travel solutions
+  stdair::TravelSolutionList_T lTravelSolutionList;
+  airracService.buildSampleTravelSolutions (lTravelSolutionList);
+
+  // Check whether or not a (CSV) input file should be read
+  if (isBuiltin == true) {
+
+    // Build the default sample BOM tree (filled with yields) for AirRAC
+    airracService.buildSampleBom();
+
+  } else {
+
+    // Build the BOM tree from parsing the yield input file    
+    AIRRAC::YieldFilePath lYieldFilePath (iYieldInputFilename);
+    airracService.parseAndLoad (lYieldFilePath);
+  }
+
+  // Calculate the yields for the given travel solution
+  airracService.calculateYields (lTravelSolutionList);
+
+  // Close the log file
+  logOutputFile.close();
+
+}
+
 
 // /////////////// Main: Unit Test Suite //////////////
 
@@ -56,49 +108,66 @@ BOOST_GLOBAL_FIXTURE (UnitTestConfig);
 BOOST_AUTO_TEST_SUITE (master_test_suite)
 
 /**
- * Test a simple inventory sell
+ * Test a simple yield search with an input file.
  */
 BOOST_AUTO_TEST_CASE (airrac_simple_yield) {
-    
-  // Travel solution
-  stdair::TravelSolutionStruct lTravelSolution;
-  stdair::TravelSolutionList_T lTravelSolutionList;
-    
+
   // Input file name
-  const stdair::Filename_T lYieldInputFilename (STDAIR_SAMPLE_DIR
-                                                "/yieldstore01.csv");
+  const stdair::Filename_T lYieldInputFilename (STDAIR_SAMPLE_DIR "/yieldstore01.csv");
 
-  // Check that the file path given as input corresponds to an actual file
-  bool doesExistAndIsReadable =
-    stdair::BasFileMgr::doesExistAndIsReadable (lYieldInputFilename);
-  BOOST_CHECK_MESSAGE (doesExistAndIsReadable == true,
-                       "The '" << lYieldInputFilename
-                       << "' input file can not be open and read");
+  // State whether the BOM tree should be built-in or parsed from an input file
+  const bool isBuiltin = false;
 
-  // Output log File
-  const stdair::Filename_T lLogFilename ("YieldTestSuite.log");
+  // Try to yieldQuote the sample default list of travel solutions
+  BOOST_CHECK_NO_THROW (testYieldQuoterHelper (0, lYieldInputFilename, isBuiltin));
   
-  // Set the log parameters
-  std::ofstream logOutputFile;
-  // Open and clean the log outputfile
-  logOutputFile.open (lLogFilename.c_str());
-  logOutputFile.clear();
+}
+
+/**
+ * Test an error detection functionality
+ * Expected to throw AIRRAC::FareFileParsingFailedException
+ */
+BOOST_AUTO_TEST_CASE (airrac_error_parsing_input_file) {
+
+  // Input file name
+  const stdair::Filename_T lYieldInputFilename (STDAIR_SAMPLE_DIR "/yieldstoreError01.csv");
+
+  // State whether the BOM tree should be built-in or parsed from an input file
+  const bool isBuiltin = false;
+    
+  // Try to yield quote the sample default list of travel solutions
+  BOOST_CHECK_THROW (testYieldQuoterHelper (1, lYieldInputFilename, isBuiltin),
+                     AIRRAC::YieldFileParsingFailedException);
+}
+
+/**
+ * Test an error detection functionality
+ * Expected to throw AIRRAC::YieldInputFileNotFoundException
+ */
+BOOST_AUTO_TEST_CASE (airrac_error_missing_input_file) {
+
+  // Input file name
+  const stdair::Filename_T lYieldInputFilename (STDAIR_SAMPLE_DIR "/missingFile.csv");
+
+  // State whether the BOM tree should be built-in or parsed from an input file
+  const bool isBuiltin = false;
+    
+  // Try to yield quote the sample default list of travel solutions
+  BOOST_CHECK_THROW (testYieldQuoterHelper (2, lYieldInputFilename, isBuiltin),
+                     AIRRAC::YieldInputFileNotFoundException);
+}
+
+/**
+ * Test a simple yield search with a default BOM tree.
+ */
+BOOST_AUTO_TEST_CASE (airrac_simple_yield_built_in) {
+
+  // State whether the BOM tree should be built-in or parsed from an input file
+  const bool isBuiltin = true;
+
+  // Try to yield quote the sample default list of travel solutions
+  BOOST_CHECK_NO_THROW (testYieldQuoterHelper (3, " ", isBuiltin));
   
-  // Initialise the list of classes/buckets
-  const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-
-  AIRRAC::AIRRAC_Service airracService (lLogParams);
-
-  // Build the BOM tree from parsing a yield file
-  AIRRAC::YieldFilePath lYieldFilePath (lYieldInputFilename);
-  airracService.parseAndLoad (lYieldFilePath);
-  
-  // Calculate the yields for the given travel solution
-  lTravelSolutionList.push_back(lTravelSolution);
-  airracService.calculateYields (lTravelSolutionList);
-
-  // Close the log file
-  logOutputFile.close();
 }
 
 // End the test suite
