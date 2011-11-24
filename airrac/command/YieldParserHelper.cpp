@@ -10,6 +10,7 @@
 #include <stdair/basic/BasConst_Request.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/service/Logger.hpp>
+#include <stdair/basic/BasParserTypes.hpp>
 // Airrac
 #include <airrac/command/YieldParserHelper.hpp>
 #include <airrac/command/YieldRuleGenerator.hpp>
@@ -356,105 +357,120 @@ namespace AIRRAC {
     stdair::year_p_t year_p;
     stdair::month_p_t month_p;
     stdair::day_p_t day_p;
-        
-    // //////////////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////////////////////////////////////
+    //
     //  (Boost Spirit) Grammar Definition
-    // //////////////////////////////////////////////////////////////////
+    //
+    /////////////////////////////////////////////////////////////////////////
+    /**
+     // Yields: yieldID; OriginCity; DestinationCity; DateRangeStart;
+     DateRangeEnd; DepartureTimeRangeStart; DepartureTimeRangeEnd; Yield; AirlineCode; Class
+
+     1; LHR; JFK; 2008-06-01; 2009-12-31; 00:00; 23:59; 4200.0; BA; A;
+
+     YieldID                 (Integer)
+     OriginCity              (3-char airport code)
+     DestinationCity         (3-char airport code)
+     DateRangeStart          (yyyy-mm-dd)
+     DateRangeEnd            (yyyy-mm-dd)
+     DepartureTimeRangeStart (hh:mm)
+     DepartureTimeRangeEnd   (hh:mm)
+     Yield                   (Double)
+     AirlineCodeList         (List of 2-char airline code)
+     ClassList               (List of 1-char class code)
     
-    // //////////////////////////////////////////////////////////////////
-    YieldRuleParser::YieldRuleParser (stdair::BomRoot& ioBomRoot,
-                                      YieldRuleStruct& ioYieldRule) :
+     */
+
+    /** Grammar for the Yield-Rule parser. */
+    struct YieldRuleParser : 
+      public boost::spirit::qi::grammar<stdair::iterator_t, 
+                                        boost::spirit::ascii::space_type> {
+
+      YieldRuleParser (stdair::BomRoot& ioBomRoot,
+                       YieldRuleStruct& ioYieldRule) :
       YieldRuleParser::base_type(start),
       _bomRoot(ioBomRoot), _yieldRule(ioYieldRule) {
 
-      start = *(comments | yield_rule);
+        start = *(comments | yield_rule);
 
-      comments = (bsq::lexeme[bsq::repeat(2)[bsa::char_('/')]
+        comments = (bsq::lexeme[bsq::repeat(2)[bsa::char_('/')]
                               >> +(bsa::char_ - bsq::eol)
                               >> bsq::eol]
-                  | bsq::lexeme[bsa::char_('/') >>bsa::char_('*') 
+                    | bsq::lexeme[bsa::char_('/') >>bsa::char_('*') 
                                 >> +(bsa::char_ - bsa::char_('*')) 
                                 >> bsa::char_('*') >> bsa::char_('/')]);
       
-      yield_rule =  yield_id
-        >> ';' >> origin >> ';' >> destination
-        >> ';' >> tripType
-        >> ';' >> dateRangeStart >> ';' >> dateRangeEnd
-        >> ';' >> timeRangeStart >> ';' >> timeRangeEnd
-        >> ';' >> point_of_sale >>  ';' >> cabinCode
-        >> ';' >> channel >> ';' >> yield
-        >> +( ';' >> segment )
-        >> yield_rule_end[doEndYield(_bomRoot, _yieldRule)];
+        yield_rule =  yield_id
+          >> ';' >> origin >> ';' >> destination
+          >> ';' >> tripType
+          >> ';' >> dateRangeStart >> ';' >> dateRangeEnd
+          >> ';' >> timeRangeStart >> ';' >> timeRangeEnd
+          >> ';' >> point_of_sale >>  ';' >> cabinCode
+          >> ';' >> channel >> ';' >> yield
+          >> +( ';' >> segment )
+          >> yield_rule_end[doEndYield(_bomRoot, _yieldRule)];
         ;
 
-      yield_id = uint1_4_p[storeYieldId(_yieldRule)];
+        yield_id = uint1_4_p[storeYieldId(_yieldRule)];
 
-      origin = bsq::repeat(3)[bsa::char_("A-Z")][storeOrigin(_yieldRule)];
+        origin = bsq::repeat(3)[bsa::char_("A-Z")][storeOrigin(_yieldRule)];
       
-      destination =  
-        bsq::repeat(3)[bsa::char_("A-Z")][storeDestination(_yieldRule)];
+        destination =  
+          bsq::repeat(3)[bsa::char_("A-Z")][storeDestination(_yieldRule)];
 
+        tripType =
+          bsq::repeat(2)[bsa::char_("A-Z")][storeTripType(_yieldRule)];
       
-tripType =
-        bsq::repeat(2)[bsa::char_("A-Z")][storeTripType(_yieldRule)];
+        dateRangeStart = date[storeDateRangeStart(_yieldRule)];
+
+        dateRangeEnd = date[storeDateRangeEnd(_yieldRule)];
+
+        date = bsq::lexeme
+          [year_p[boost::phoenix::ref(_yieldRule._itYear) = bsq::labels::_1]
+           >> '-'
+           >> month_p[boost::phoenix::ref(_yieldRule._itMonth) = bsq::labels::_1]
+           >> '-'
+           >> day_p[boost::phoenix::ref(_yieldRule._itDay) = bsq::labels::_1] ];
+
+        timeRangeStart = time[storeStartRangeTime(_yieldRule)];
       
-      dateRangeStart = date[storeDateRangeStart(_yieldRule)];
+        timeRangeEnd = time[storeEndRangeTime(_yieldRule)];
 
-      dateRangeEnd = date[storeDateRangeEnd(_yieldRule)];
+        time =  bsq::lexeme
+          [hour_p[boost::phoenix::ref(_yieldRule._itHours) = bsq::labels::_1]
+           >> ':'
+           >> minute_p[boost::phoenix::ref(_yieldRule._itMinutes) = bsq::labels::_1]      
+           >> - (':' >> second_p[boost::phoenix::ref(_yieldRule._itSeconds) = bsq::labels::_1]) ];
 
-      date = bsq::lexeme
-        [year_p[boost::phoenix::ref(_yieldRule._itYear) = bsq::labels::_1]
-        >> '-'
-        >> month_p[boost::phoenix::ref(_yieldRule._itMonth) = bsq::labels::_1]
-        >> '-'
-        >> day_p[boost::phoenix::ref(_yieldRule._itDay) = bsq::labels::_1] ];
+        point_of_sale = bsq::repeat(3)[bsa::char_("A-Z")][storePOS(_yieldRule)];
 
-      timeRangeStart = time[storeStartRangeTime(_yieldRule)];
-      
-      timeRangeEnd = time[storeEndRangeTime(_yieldRule)];
+        cabinCode = bsa::char_("A-Z")[storeCabinCode(_yieldRule)];
 
-      time =  bsq::lexeme
-        [hour_p[boost::phoenix::ref(_yieldRule._itHours) = bsq::labels::_1]
-        >> ':'
-        >> minute_p[boost::phoenix::ref(_yieldRule._itMinutes) = bsq::labels::_1]      
-        >> - (':' >> second_p[boost::phoenix::ref(_yieldRule._itSeconds) = bsq::labels::_1]) ];
+        channel = bsq::repeat(2)[bsa::char_("A-Z")][storeChannel(_yieldRule)];
 
-      point_of_sale = bsq::repeat(3)[bsa::char_("A-Z")][storePOS(_yieldRule)];
+        yield = bsq::double_[storeYield(_yieldRule)];
 
-      cabinCode = bsa::char_("A-Z")[storeCabinCode(_yieldRule)];
+        segment = bsq::repeat(2)[bsa::char_("A-Z")][storeAirlineCode(_yieldRule)]
+          >> ';'
+          >> bsq::repeat(1,bsq::inf)[bsa::char_("A-Z")][storeClass(_yieldRule)];
 
-      channel = bsq::repeat(2)[bsa::char_("A-Z")][storeChannel(_yieldRule)];
-
-      yield = bsq::double_[storeYield(_yieldRule)];
-
-      segment = bsq::repeat(2)[bsa::char_("A-Z")][storeAirlineCode(_yieldRule)]
-        >> ';'
-        >> bsq::repeat(1,bsq::inf)[bsa::char_("A-Z")][storeClass(_yieldRule)];
-
-      yield_rule_end = bsa::char_(';');
-
-      // BOOST_SPIRIT_DEBUG_NODE (YieldParser);
-      BOOST_SPIRIT_DEBUG_NODE (start);
-      BOOST_SPIRIT_DEBUG_NODE (comments);
-      BOOST_SPIRIT_DEBUG_NODE (yield_rule);
-      BOOST_SPIRIT_DEBUG_NODE (yield_id);
-      BOOST_SPIRIT_DEBUG_NODE (origin);
-      BOOST_SPIRIT_DEBUG_NODE (destination);
-      BOOST_SPIRIT_DEBUG_NODE (tripType);
-      BOOST_SPIRIT_DEBUG_NODE (dateRangeStart);
-      BOOST_SPIRIT_DEBUG_NODE (dateRangeEnd);
-      BOOST_SPIRIT_DEBUG_NODE (date);
-      BOOST_SPIRIT_DEBUG_NODE (timeRangeStart);
-      BOOST_SPIRIT_DEBUG_NODE (timeRangeEnd);
-      BOOST_SPIRIT_DEBUG_NODE (time);
-      BOOST_SPIRIT_DEBUG_NODE (point_of_sale);
-      BOOST_SPIRIT_DEBUG_NODE (cabinCode);
-      BOOST_SPIRIT_DEBUG_NODE (channel);
-      BOOST_SPIRIT_DEBUG_NODE (yield);
-      BOOST_SPIRIT_DEBUG_NODE (segment);
-      BOOST_SPIRIT_DEBUG_NODE (yield_rule_end);
+        yield_rule_end = bsa::char_(';');
      
-    }
+      }
+      
+      // Instantiation of rules
+      boost::spirit::qi::rule<stdair::iterator_t,
+                              boost::spirit::ascii::space_type>
+      start, comments, yield_rule, yield_id, origin, destination, tripType,
+        dateRangeStart, dateRangeEnd, date, timeRangeStart, timeRangeEnd,
+        time, point_of_sale, cabinCode, channel, yield, segment,
+        yield_rule_end;
+      
+      // Parser Context
+      stdair::BomRoot& _bomRoot;
+      YieldRuleStruct& _yieldRule;
+    };
     
   }
 

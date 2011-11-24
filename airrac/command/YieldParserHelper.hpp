@@ -7,8 +7,9 @@
 // STL
 #include <string>
 //#define BOOST_SPIRIT_DEBUG
+// Boost
+#include <boost/spirit/include/qi.hpp>
 // StdAir
-#include <stdair/basic/BasParserTypes.hpp>
 #include <stdair/command/CmdAbstract.hpp>
 // Airrac
 #include <airrac/AIRRAC_Types.hpp>
@@ -184,50 +185,6 @@ namespace AIRRAC {
                        boost::spirit::qi::unused_type) const;
       /** Actor Specific Context. */
       stdair::BomRoot& _bomRoot;
-    };
-  
-    /////////////////////////////////////////////////////////////////////////
-    //
-    //  (Boost Spirit) Grammar Definition
-    //
-    /////////////////////////////////////////////////////////////////////////
-    /**
-     // Yields: yieldID; OriginCity; DestinationCity; DateRangeStart;
-     DateRangeEnd; DepartureTimeRangeStart; DepartureTimeRangeEnd; Yield; AirlineCode; Class
-
-     1; LHR; JFK; 2008-06-01; 2009-12-31; 00:00; 23:59; 4200.0; BA; A;
-
-     YieldID                 (Integer)
-     OriginCity              (3-char airport code)
-     DestinationCity         (3-char airport code)
-     DateRangeStart          (yyyy-mm-dd)
-     DateRangeEnd            (yyyy-mm-dd)
-     DepartureTimeRangeStart (hh:mm)
-     DepartureTimeRangeEnd   (hh:mm)
-     Yield                   (Double)
-     AirlineCodeList         (List of 2-char airline code)
-     ClassList               (List of 1-char class code)
-    
-     */
-
-    /** Grammar for the Yield-Rule parser. */
-    struct YieldRuleParser : 
-      public boost::spirit::qi::grammar<stdair::iterator_t, 
-                                        boost::spirit::ascii::space_type> {
-
-      YieldRuleParser (stdair::BomRoot&, YieldRuleStruct&);
-
-      // Instantiation of rules
-      boost::spirit::qi::rule<stdair::iterator_t,
-                              boost::spirit::ascii::space_type>
-      start, comments, yield_rule, yield_id, origin, destination, tripType,
-        dateRangeStart, dateRangeEnd, date, timeRangeStart, timeRangeEnd,
-        time, point_of_sale, cabinCode, channel, yield, segment,
-        yield_rule_end;
-      
-      // Parser Context
-      stdair::BomRoot& _bomRoot;
-      YieldRuleStruct& _yieldRule;
     };
 
   }
