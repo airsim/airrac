@@ -7,8 +7,9 @@
 // STL
 #include <string>
 //#define BOOST_SPIRIT_DEBUG
+// Boost
+#include <boost/spirit/include/qi.hpp>
 // StdAir
-#include <stdair/basic/BasParserTypes.hpp>
 #include <stdair/command/CmdAbstract.hpp>
 // Airrac
 #include <airrac/AIRRAC_Types.hpp>

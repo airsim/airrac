@@ -10,6 +10,7 @@
 #include <stdair/basic/BasConst_Request.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/service/Logger.hpp>
+#include <stdair/basic/BasParserTypes.hpp>
 // Airrac
 #include <airrac/command/YieldParserHelper.hpp>
 #include <airrac/command/YieldRuleGenerator.hpp>
