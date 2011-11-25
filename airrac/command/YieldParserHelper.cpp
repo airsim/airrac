@@ -10,6 +10,7 @@
 #include <stdair/basic/BasConst_Request.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/service/Logger.hpp>
+//#define BOOST_SPIRIT_DEBUG
 #include <stdair/basic/BasParserTypes.hpp>
 // Airrac
 #include <airrac/command/YieldParserHelper.hpp>
