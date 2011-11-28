@@ -457,6 +457,27 @@ namespace AIRRAC {
           >> bsq::repeat(1,bsq::inf)[bsa::char_("A-Z")][storeClass(_yieldRule)];
 
         yield_rule_end = bsa::char_(';');
+
+        // BOOST_SPIRIT_DEBUG_NODE (YieldParser);
+	BOOST_SPIRIT_DEBUG_NODE (start);
+        BOOST_SPIRIT_DEBUG_NODE (comments);
+        BOOST_SPIRIT_DEBUG_NODE (yield_rule);
+        BOOST_SPIRIT_DEBUG_NODE (yield_id);
+        BOOST_SPIRIT_DEBUG_NODE (origin);
+        BOOST_SPIRIT_DEBUG_NODE (destination);
+        BOOST_SPIRIT_DEBUG_NODE (tripType);
+        BOOST_SPIRIT_DEBUG_NODE (dateRangeStart);
+        BOOST_SPIRIT_DEBUG_NODE (dateRangeEnd);
+        BOOST_SPIRIT_DEBUG_NODE (date);
+        BOOST_SPIRIT_DEBUG_NODE (timeRangeStart);
+        BOOST_SPIRIT_DEBUG_NODE (timeRangeEnd);
+        BOOST_SPIRIT_DEBUG_NODE (time);
+        BOOST_SPIRIT_DEBUG_NODE (point_of_sale);
+        BOOST_SPIRIT_DEBUG_NODE (cabinCode);
+        BOOST_SPIRIT_DEBUG_NODE (channel);
+        BOOST_SPIRIT_DEBUG_NODE (yield);
+        BOOST_SPIRIT_DEBUG_NODE (segment);
+        BOOST_SPIRIT_DEBUG_NODE (yield_rule_end);
      
       }
       
