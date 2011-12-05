@@ -1,12 +1,20 @@
+* 2011-12-05:
+- Version 0.2.3
+- Added a few unit tests.
+- Improved the (Boost.Spirit) parsers, especially regarding the
+  parsing of comments / empty lines.
+- Improved the CMake build framework, e.g., with regards to Xapian.
+  Also, the new MetaSim wrapper project can now build all the
+  simulator-related sub-projects, including AirRAC.
+
 * 2011-11-05:
 - Version 0.2.2
-- Improved the CMake build framework, e.g.,
-  with regards to SOCI.
+- Improved the CMake build framework, e.g., with regards to SOCI.
 
 * 2011-10-19:
 - Version 0.2.1
-- The build framework is now compatible with CMake 2.6
-  (the exclusive dependency on CMake 2.8 has been removed).
+- The build framework is now compatible with CMake 2.6 (the exclusive
+  dependency on CMake 2.8 has been removed).
 
 * 2011-10-15:
 - Version 0.2.0
@@ -18,8 +26,7 @@
 
 * 2011-08-06:
 - Version 0.1.0
-- First release. The yields are parsed either from a 
-  CSV file or from a built-in sample BOM tree. Then,
-  AirRAC retrieves yields corresponding to given
-  travel solution structures.
+- First release. The yields are parsed either from a CSV file or from a
+  built-in sample BOM tree. Then, AirRAC retrieves yields corresponding to
+  given travel solution structures.
 
