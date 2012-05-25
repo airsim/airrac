@@ -167,17 +167,56 @@ namespace AIRRAC {
   
   // ////////////////////////////////////////////////////////////////////
   void AIRRAC_Service::
-  parseAndLoad (const YieldFilePath& iYieldFilename) {
+  parseAndLoad (const YieldFilePath& iYieldFilename) { 
 
-    // Retrieve the BOM root object.
+    // Retrieve the AirRAC service context
+    if (_airracServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirRAC service has not"
+                                                    " been initialised");
+    }
     assert (_airracServiceContext != NULL);
+
+    // Retrieve the AirRAC service context and whether it owns the Stdair
+    // service
     AIRRAC_ServiceContext& lAIRRAC_ServiceContext = *_airracServiceContext;
+    const bool doesOwnStdairService =
+      lAIRRAC_ServiceContext.getOwnStdairServiceFlag();
+
+    // Retrieve the StdAir service object from the (AirRAC) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRRAC_ServiceContext.getSTDAIR_Service();
-    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
+
+    // Retrieve the BOM root object.
+    stdair::BomRoot& lPersistentBomRoot = 
+      lSTDAIR_Service.getPersistentBomRoot();
     
-    // Initialise the airline inventories
-    YieldParser::generateYieldStore (iYieldFilename, lBomRoot);
+    /**
+     * 1. Initialise the airline inventories
+     */
+    YieldParser::generateYieldStore (iYieldFilename, lPersistentBomRoot);    
+
+    /**
+     * 2. Delegate the complementary building of objects and links by the
+     *    appropriate levels/components
+     * 
+     * \note: Currently, no more things to do by AirRAC at that stage,
+     *        as there is no child
+     */
+
+    /**
+     * 3. Build the complementary objects/links for the current component (here,
+     *    AirRAC)
+     */ 
+    buildComplementaryLinks (lPersistentBomRoot);
+
+    /**
+     * Have AirRAC clone the whole persistent BOM tree, only when the StdAir
+     * service is owned by the current component (AirRAC here)
+     */
+    if (doesOwnStdairService == true) {
+      //
+      clonePersistentBom ();
+    }
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -198,7 +237,11 @@ namespace AIRRAC {
 
     // Retrieve the StdAir service object from the (AirRAC) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
-      lAIRRAC_ServiceContext.getSTDAIR_Service();
+      lAIRRAC_ServiceContext.getSTDAIR_Service(); 
+
+    // Retrieve the persistent BOM root object.
+    stdair::BomRoot& lPersistentBomRoot = 
+      lSTDAIR_Service.getPersistentBomRoot();
 
     /**
      * 1. Have StdAir build the whole BOM tree, only when the StdAir service is
@@ -219,12 +262,70 @@ namespace AIRRAC {
 
     /**
      * 3. Build the complementary objects/links for the current component (here,
-     *    SimFQT)
-     *
+     *    AirRAC)
+     */ 
+    buildComplementaryLinks (lPersistentBomRoot);
+
+    /**
+     * 4. Have AirRAC clone the whole persistent BOM tree, only when the StdAir
+     *    service is owned by the current component (AirRAC here)
+     */
+    if (doesOwnStdairService == true) {
+      //
+      clonePersistentBom ();
+    }
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  void AIRRAC_Service::clonePersistentBom () { 
+
+    // Retrieve the AirRAC service context
+    if (_airracServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirRAC service has not"
+                                                    " been initialised");
+    }
+    assert (_airracServiceContext != NULL);
+
+    // Retrieve the AirRAC service context and whether it owns the Stdair
+    // service
+    AIRRAC_ServiceContext& lAIRRAC_ServiceContext = *_airracServiceContext;
+    const bool doesOwnStdairService =
+      lAIRRAC_ServiceContext.getOwnStdairServiceFlag();
+
+    // Retrieve the StdAir service object from the (AirRAC) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRRAC_ServiceContext.getSTDAIR_Service();
+ 
+    /**
+     * 1. Have StdAir clone the whole persistent BOM tree, only when the StdAir
+     *    service is owned by the current component (AirRAC here).
+     */
+    if (doesOwnStdairService == true) {
+ 
+      //
+      lSTDAIR_Service.clonePersistentBom ();
+    }  
+
+    /**
+     * 2. Delegate the complementary building of objects and links by the
+     *    appropriate levels/components
+     * 
      * \note: Currently, no more things to do by AirRAC at that stage,
      *        as there is no child
      */
-  }
+    
+    /**
+     * 3. Build the complementary objects/links for the current component (here,
+     *    AirRAC)
+     */ 
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();   
+    buildComplementaryLinks (lBomRoot);
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  void AIRRAC_Service::buildComplementaryLinks (stdair::BomRoot& ioBomRoot) {
+    // Currently, no more things to do by AirRAC at that stage.
+  } 
 
   // //////////////////////////////////////////////////////////////////////
   void AIRRAC_Service::
@@ -329,20 +430,11 @@ namespace AIRRAC {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  void AIRRAC_Service::updateYields () {
+  void AIRRAC_Service::updateYields (stdair::BomRoot& ioBomRoot) {
     // Retrieve the AirRAC service context
     assert (_airracServiceContext != NULL);
-    AIRRAC_ServiceContext& lAIRRAC_ServiceContext = *_airracServiceContext;
-
-    // Retrieve the StdAir service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lAIRRAC_ServiceContext.getSTDAIR_Service();
     
-    // Get the root of the BOM tree, on which all of the other BOM objects
-    // will be attached
-    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
-
     // Update the default yields to the booking classes.
-    YieldManager::updateYields (lBomRoot);
+    YieldManager::updateYields (ioBomRoot);
   }
 }
