@@ -13,7 +13,8 @@
 
 // Forward declarations.
 namespace stdair {
-  class STDAIR_Service;
+  class STDAIR_Service; 
+  class BomRoot;
   struct BasLogParams;
   struct BasDBParams;
 }
@@ -101,7 +102,7 @@ namespace AIRRAC {
     /**
      * Update the yields for booking classes and O&D.
      */
-    void updateYields();
+    void updateYields(stdair::BomRoot&);
 
     /**
      * Build a sample BOM tree.
@@ -109,7 +110,18 @@ namespace AIRRAC {
      * For now, no object is created: the BOM tree remains empty. In
      * the future, it will hold a sample yield store.
      */
-    void buildSampleBom();
+    void buildSampleBom();   
+
+    /**
+     * Clone the persistent sample BOM tree.
+     */
+    void clonePersistentBom();  
+
+    /**
+     * Build all the complementary links in the given bom root object.
+     * \note Do nothing for now.
+     */
+    void buildComplementaryLinks (stdair::BomRoot&);
 
     /**
      * Build a sample list of travel solutions.
