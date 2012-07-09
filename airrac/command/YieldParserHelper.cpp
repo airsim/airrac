@@ -534,7 +534,7 @@ namespace AIRRAC {
     std::ifstream fileToBeParsed (_filename.c_str(), std::ios_base::in);
 
     // Check the filename exists and can be open
-    if (fileToBeParsed == false) {
+    if (fileToBeParsed.is_open() == false) {
       STDAIR_LOG_ERROR ("The yield store file " << _filename
                         << " can not be open."
                         << std::endl);
