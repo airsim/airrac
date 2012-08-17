@@ -7,6 +7,8 @@
 // STL
 #include <vector>
 #include <string>
+// Boost
+#include <boost/shared_ptr.hpp>
 // StdAir
 #include <stdair/stdair_exceptions.hpp>
 #include <stdair/stdair_file.hpp>
