@@ -54,7 +54,7 @@ export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=64"
 Then, as usual:
 * To configure the project, type something like:
   mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/airrac-0.2.3 \
+  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/airrac-1.00.0 \
    -DWITH_STDAIR_PREFIX=${INSTALL_BASEDIR}/stdair-stable \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON \
    ${LIBSUFFIX_4_CMAKE} ..
@@ -65,7 +65,7 @@ Then, as usual:
 * To install the library (libairrac*.so*) and the binary (airrac),
   make install
   cd ${INSTALL_BASEDIR}
-  rm -f airrac-stable && ln -s airrac-0.2.3 airrac-stable
+  rm -f airrac-stable && ln -s airrac-1.00.0 airrac-stable
   cd -
 * To package the source files, type:
   make dist

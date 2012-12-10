@@ -1,3 +1,8 @@
+* 2012-11-28:
+- Version 1.00.0
+- Open source Release. 
+- AirRAC retrieves yields corresponding to given travel solution structures.
+
 * 2011-12-05:
 - Version 0.2.3
 - Added a few unit tests.

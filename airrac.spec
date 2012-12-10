@@ -2,7 +2,7 @@
 %global mydocs __tmp_docdir
 #
 Name:           airrac
-Version:        0.2.3
+Version:        1.00.0
 Release:        1%{?dist}
 
 Summary:        C++ Simulated Revenue Accounting (RAC) System Library
@@ -107,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov 28 2012 Denis Arnaud <denis.arnaud_fedora@m4x.org> 1.00.0-1
+- Upstream update
+
 * Mon Dec 05 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.2.3-1
 - Upstream update
  
