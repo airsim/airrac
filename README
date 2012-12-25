@@ -76,9 +76,9 @@ Then, as usual:
 * To package the binary and the (HTML and PDF) documentation:
   make package
 * To browse the (just installed, if enabled) HTML documentation:
-  midori file://${INSTALL_BASEDIR}/airrac-99.99.99/share/doc/airrac-99.99.99/html/index.html
+  midori file://${INSTALL_BASEDIR}/airrac-stable/share/doc/airrac-1.00.0/html/index.html
 * To browse the (just installed, if enabled) PDF documentation:
-  evince ${INSTALL_BASEDIR}/airrac-99.99.99/share/doc/airrac-99.99.99/html/refman.pdf
+  evince ${INSTALL_BASEDIR}/airrac-stable/share/doc/airrac-1.00.0/html/refman.pdf
 * To run the local binary version:
   ./airrac/airrac -b
 * To run the installed version:
