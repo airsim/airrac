@@ -33,17 +33,17 @@ git checkout trunk
 
 Then, you need the following packages (Fedora/RedHat/CentOS names here, 
 but names may vary according to distributions):
-  * cmake
-  * gcc-c++
-  * stdair-devel
-  * boost-devel
-  * zeromq-devel
-  * readline-devel, ncurses-devel
-  * soci-mysql-devel
-  * python-devel
-  * gettext-devel (optional)
-  * doxygen, ghostscript, graphviz and tetex-latex (optional)
-  * rpm-build (optional)
+* cmake
+* gcc-c++
+* boost-devel / libboost-dev
+* python-devel / python-dev
+* stdair-devel / libstdair-dev
+* zeromq-devel
+* readline-devel, ncurses-devel
+* soci-mysql-devel, soci-sqlite3-devel
+* gettext-devel / gettext-dev
+* doxygen, ghostscript, graphviz and tetex-latex (optional)
+* rpm-build (optional)
 
 Building the library and test binary from the tarball:
 ------------------------------------------------------
@@ -53,12 +53,14 @@ http://sourceforge.net/project/showfiles.php?group_id=317250
 To customise the following to your environment, you can alter the path
 to the installation directory:
 export INSTALL_BASEDIR=/home/user/dev/deliveries
-export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=64"
+export AIRRAC_VER=1.00.0
+if [ -d /usr/lib64 ]; then LIBSUFFIX=64; fi
+export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 
 Then, as usual:
 * To configure the project, type something like:
   mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/airrac-1.00.0 \
+  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/airrac-${AIRRAC_VER} \
    -DWITH_STDAIR_PREFIX=${INSTALL_BASEDIR}/stdair-stable \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON -DINSTALL_DOC:BOOL=ON \
    -DRUN_GCOV:BOOL=OFF ${LIBSUFFIX_4_CMAKE} ..
@@ -76,13 +78,13 @@ Then, as usual:
 * To package the binary and the (HTML and PDF) documentation:
   make package
 * To browse the (just installed, if enabled) HTML documentation:
-  midori file://${INSTALL_BASEDIR}/airrac-stable/share/doc/airrac-1.00.0/html/index.html
+  midori file://${INSTALL_BASEDIR}/airrac-${AIRRAC_VER}/share/doc/airrac-${AIRRAC_VER}/html/index.html
 * To browse the (just installed, if enabled) PDF documentation:
-  evince ${INSTALL_BASEDIR}/airrac-stable/share/doc/airrac-1.00.0/html/refman.pdf
+  evince ${INSTALL_BASEDIR}/airrac-${AIRRAC_VER}/share/doc/airrac-${AIRRAC_VER}/html/refman.pdf
 * To run the local binary version:
   ./airrac/airrac -b
 * To run the installed version:
-  ${INSTALL_BASEDIR}/airrac-stable/bin/airrac -b
+  ${INSTALL_BASEDIR}/airrac-${AIRRAC_VER}/bin/airrac -b
 
-Denis Arnaud (December 2012)
+Denis Arnaud (January 2014)
 
