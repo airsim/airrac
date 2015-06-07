@@ -20,14 +20,15 @@ yum -y install airrac-devel airrac-doc
 
 You can also get the RPM packages (which may work on Linux
 distributions like Novel Suse and Mandriva) from the Fedora repository
-(e.g., for Fedora 18, 
-http://fr2.rpmfind.net/linux/fedora/releases/18/Everything/)
+(e.g., for Fedora 22, 
+http://fr2.rpmfind.net/linux/fedora/releases/22/Everything/)
 
 
 Building the library and test binary from Git repository:
 ----------------------------------------------------------------
-The Sourceforge Git repository may be cloned as following:
-git clone ssh://git.code.sf.net/p/airrac/code airracgit
+The Git repository may be cloned as following:
+$ git clone git@github.com:airsim/airrac.git airtspgit # through SSH
+$ git clone https://github.com/airsim/airrac.git # if the firewall filters SSH
 cd airracgit
 git checkout trunk
 
@@ -37,13 +38,16 @@ but names may vary according to distributions):
 * gcc-c++
 * boost-devel / libboost-dev
 * python-devel / python-dev
-* stdair-devel / libstdair-dev
-* zeromq-devel
-* readline-devel, ncurses-devel
-* soci-mysql-devel, soci-sqlite3-devel
 * gettext-devel / gettext-dev
-* doxygen, ghostscript, graphviz and tetex-latex (optional)
+* sqlite3-devel / libsqlite3-dev
+* readline-devel / readline-dev
+* ncurses-devel
+* soci-mysql-devel, soci-sqlite3-devel
+* stdair-devel / libstdair-dev
+* doxygen, ghostscript, graphviz
+* tetex-latex (optional)
 * rpm-build (optional)
+
 
 Building the library and test binary from the tarball:
 ------------------------------------------------------
@@ -75,13 +79,13 @@ Then, as usual:
 * To package the binary and the (HTML and PDF) documentation:
   make package
 * To browse the (just installed, if enabled) HTML documentation:
-  midori file://${INSTALL_BASEDIR}/airrac-${AIRRAC_VER}/share/doc/airrac-${AIRRAC_VER}/html/index.html
+  midori file://${INSTALL_BASEDIR}/airrac-${AIRRAC_VER}/share/doc/airrac/html/index.html
 * To browse the (just installed, if enabled) PDF documentation:
-  evince ${INSTALL_BASEDIR}/airrac-${AIRRAC_VER}/share/doc/airrac-${AIRRAC_VER}/html/refman.pdf
+  evince ${INSTALL_BASEDIR}/airrac-${AIRRAC_VER}/share/doc/airrac/html/refman.pdf
 * To run the local binary version:
   ./airrac/airrac -b
 * To run the installed version:
   ${INSTALL_BASEDIR}/airrac-${AIRRAC_VER}/bin/airrac -b
 
-Denis Arnaud (January 2014)
+Denis Arnaud (June 2015)
 
