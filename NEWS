@@ -1,3 +1,7 @@
+* 2015-05-31:
+- Version 1.00.1
+- Removed the dependency on ZeroMQ (only AirInv is dependent on it, not AirRAC)
+
 * 2012-11-28:
 - Version 1.00.0
 - Open source Release. 

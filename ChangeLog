@@ -1,21 +1,24 @@
+* Sun May 31 2015 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 1.00.1
+- Removed the dependency on ZeroMQ (only AirInv is dependent on it, not AirRAC)
+
 * Wed Nov 28 2012 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 1.00.0
-- Open Source Release 
+- Open Source Release
 - AirRAC retrieves yields corresponding to given travel solution structures.
-	
+
 * Mon Dec 05 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.2.3
 - Added a few unit tests.
 - Improved the (Boost.Spirit) parsers, especially regarding the parsing of comments / empty lines.
 - Improved the CMake build framework, e.g., with regards to Xapian. Also, the
 new MetaSim wrapper project can now build all the simulator-related
 sub-projects, including AirRAC.
-	  
+
 * Sat Nov 05 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.2.2
 - Improved the CMake build framework, e.g., with regards to SOCI.
 
 * Wed Oct 19 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.2.1
 - The build framework is now compatible with CMake 2.6 (the exclusive
 dependency on CMake 2.8 has been removed).
-	
+
 * Sat Oct 15 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.2.0
 - Updates for the new StdAir versions (up until 0.43.0).
 
