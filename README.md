@@ -57,7 +57,7 @@ http://sourceforge.net/project/showfiles.php?group_id=317250
 To customise the following to your environment, you can alter the path
 to the installation directory:
 export INSTALL_BASEDIR=/home/user/dev/deliveries
-export AIRRAC_VER=1.00.1
+export AIRRAC_VER=1.00.2
 if [ -d /usr/lib64 ]; then LIBSUFFIX=64; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 
@@ -75,7 +75,7 @@ Then, as usual:
 * To install the library (libairrac*.so*) and the binary (airrac),
   make install
   cd ${INSTALL_BASEDIR}
-  rm -f airrac-stable && ln -s airrac-1.00.0 airrac-stable
+  rm -f airrac-stable && ln -s airrac-1.00.2 airrac-stable
   cd -
 * To package the source files, type:
   make dist
