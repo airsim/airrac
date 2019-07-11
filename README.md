@@ -78,12 +78,14 @@ Then, as usual:
   make
 ```
 * To test the project, type:
+```bash
   make check
+```
 * To install the library (libairrac*.so*) and the binary (airrac),
 ```bash
   make install
   cd ${INSTALL_BASEDIR}
-  rm -f airrac-stable && ln -s airrac-1.00.2 airrac-stable
+  rm -f airrac-stable && ln -s airrac-${AIRRAC_VER} airrac-stable
   cd -
 ```
 * To package the source files, type:
