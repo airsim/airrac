@@ -56,13 +56,13 @@ but names may vary according to distributions):
 ## Building the library and test binary from the tarball
 The latest stable source tarball (`airrac*.tar.gz` or `.bz2`) can be
 found on GitHub: http://github.com/airsim/airrac/releases, _e.g._,
-https://github.com/airsim/airrac/archive/airrac-1.00.4.tar.gz
+https://github.com/airsim/airrac/archive/airrac-1.00.5.tar.gz
 
 To customise the following to your environment, you can alter the path
 to the installation directory:
 ```bash
 export INSTALL_BASEDIR="${HOME}/dev/deliveries"
-export AIRRAC_VER="1.00.4"
+export AIRRAC_VER="1.00.5"
 if [ -d /usr/lib64 ]; then LIBSUFFIX="64"; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 ```
