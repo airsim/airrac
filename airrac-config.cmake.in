@@ -11,13 +11,13 @@
 
 # Tell the user project where to find AirRAC headers and libraries
 set (AIRRAC_VERSION "@PACKAGE_VERSION@")
-set (AIRRAC_BINARY_DIRS "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@")
-set (AIRRAC_INCLUDE_DIRS "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@")
-set (AIRRAC_LIBRARY_DIRS "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@")
+set (AIRRAC_BINARY_DIRS "@PACKAGE_AIRRAC_BIN_DIR@")
+set (AIRRAC_INCLUDE_DIRS "@PACKAGE_AIRRAC_INCLUDE_DIRS@")
+set (AIRRAC_LIBRARY_DIRS "@PACKAGE_AIRRAC_LIB_DIR@")
 
 # Library dependencies for AirRAC (contains definitions for the AirRAC IMPORTED
 # targets)
-include ("@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/cmake/@PROJECT_NAME@/@PROJECT_NAME@-library-depends.cmake")
+include ("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-library-depends.cmake")
 
 # These are the AirRAC IMPORTED targets, created by airrac-library-depends.cmake
 set (AIRRAC_LIBRARIES airraclib)

@@ -61,7 +61,7 @@ To customise the following to your environment, you can alter the path
 to the installation directory:
 ```bash
 export INSTALL_BASEDIR="${HOME}/dev/deliveries"
-export AIRRAC_VER="1.00.10"
+export AIRRAC_VER="1.00.11"
 ```
 
 Then, as usual:

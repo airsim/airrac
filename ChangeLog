@@ -1,3 +1,6 @@
+* Tue Mar 25 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 1.00.11
+- Made the CMake export conf relocatable
+
 * Mon Mar 24 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 1.00.10
 - Upgraded CMake support files
 
