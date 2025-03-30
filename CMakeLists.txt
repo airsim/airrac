@@ -10,7 +10,7 @@ include (config/project_config_embeddable.cmake)
 project (airrac)
 set_project_names (airrac AirRAC)
 set_project_brief ("C++ Simulated Revenue Accounting (RAC) System Library")
-set_project_versions (1 00 11)
+set_project_versions (1 00 12)
 
 ##
 # Project options
