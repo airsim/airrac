@@ -65,7 +65,16 @@ export AIRRAC_VER="1.00.11"
 ```
 
 Then, as usual:
-* To configure the project, type something like:
+* To configure the project
+  * When dependencies are installed in standard directories (_e.g._, `/usr`):
+```bash
+  mkdir build && cd build
+  cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/airrac-${AIRRAC_VER} \
+   -DCMAKE_BUILD_TYPE:STRING=Debug -DENABLE_TEST:BOOL=ON -DINSTALL_DOC:BOOL=ON \
+   -DRUN_GCOV:BOOL=OFF ..
+```
+  * When dependencies are installed in non-standard directories (_e.g._,
+    in the same base directory as of RMOL, that is, `${INSTALL_BASEDIR}`):
 ```bash
   mkdir build && cd build
   cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/airrac-${AIRRAC_VER} \
