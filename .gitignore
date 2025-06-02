@@ -19,3 +19,7 @@ configure
 airrac/config.h.in*
 test/airrac/*_results.xml
 
+# Packit setup
+*.tar.gz
+*.rpm
+*.log
